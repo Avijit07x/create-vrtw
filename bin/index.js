@@ -94,7 +94,7 @@ export default defineConfig({
 	fs.writeFileSync(indexCss, "@import 'tailwindcss';\n", "utf-8");
 	console.log(chalk.green("💡 src/index.css updated for Tailwind CSS!"));
 
-	// 7. --- Extra cleanup as requested ---
+	// 7. --- Extra cleanup ---
 
 	// Delete src/App.css if exists
 	const appCss = path.join(process.cwd(), "src", "App.css");
