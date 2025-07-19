@@ -6,6 +6,7 @@ import fs from "fs";
 import path from "path";
 import prompts from "prompts";
 
+// Delete file or directory if exists
 function deleteIfExists(filePath) {
 	if (fs.existsSync(filePath)) {
 		if (fs.lstatSync(filePath).isDirectory()) {
@@ -16,6 +17,7 @@ function deleteIfExists(filePath) {
 	}
 }
 
+// Remove all contents of a directory
 function cleanDir(dirPath) {
 	if (fs.existsSync(dirPath)) {
 		for (const file of fs.readdirSync(dirPath)) {
@@ -30,33 +32,56 @@ function cleanDir(dirPath) {
 }
 
 async function main() {
-	// 1. Ask for project name
+	// 1. Ask project name
 	const response = await prompts({
 		type: "text",
 		name: "projectName",
 		message: "Enter your project name:",
 	});
-
 	const projectName = response.projectName?.trim() || "my-app";
+
+	// 2. Ask for JS or TS
+	const { language } = await prompts({
+		type: "select",
+		name: "language",
+		message: "Which language do you want to use?",
+		choices: [
+			{ title: "TypeScript", value: "ts" },
+			{ title: "JavaScript", value: "js" },
+		],
+		initial: 0,
+	});
+	const viteTemplate = language === "ts" ? "react-ts" : "react";
 	const projectPath = path.resolve(process.cwd(), projectName);
 
-	// 2. Scaffold Vite project
+	// 3. Scaffold Vite project
 	console.log(
-		chalk.cyan("\n🛠️  Creating Vite React + TypeScript project...")
+		chalk.cyan(
+			`\n🛠️  Creating Vite React + ${
+				language === "ts" ? "TypeScript" : "JavaScript"
+			} project...`
+		)
 	);
 	await execa(
 		"npm",
-		["create", "vite@latest", projectName, "--", "--template", "react-ts"],
+		[
+			"create",
+			"vite@latest",
+			projectName,
+			"--",
+			"--template",
+			viteTemplate,
+		],
 		{ stdio: "inherit" }
 	);
 
 	process.chdir(projectPath);
 
-	// 3. Install initial dependencies
+	// 4. Install initial dependencies
 	console.log(chalk.cyan("\n📦 Installing npm dependencies..."));
 	await execa("npm", ["install"], { stdio: "inherit" });
 
-	// 4. Install Tailwind and Vite plugin
+	// 5. Install Tailwind and Vite plugin
 	console.log(
 		chalk.cyan(
 			"\n🎨 Installing Tailwind CSS and @tailwindcss/vite plugin..."
@@ -66,7 +91,7 @@ async function main() {
 		stdio: "inherit",
 	});
 
-	// 5. Overwrite vite.config.ts with Tailwind plugin usage
+	// 6. Overwrite vite.config.ts/js with Tailwind plugin usage
 	const viteConfigPathTS = path.join(process.cwd(), "vite.config.ts");
 	const viteConfigPathJS = path.join(process.cwd(), "vite.config.js");
 	const viteConfigCode = `import tailwindcss from "@tailwindcss/vite";
@@ -78,35 +103,46 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
 });
 `;
-	if (fs.existsSync(viteConfigPathTS)) {
+
+	if (language === "ts") {
 		fs.writeFileSync(viteConfigPathTS, viteConfigCode, "utf8");
 		console.log(chalk.green("🔧 vite.config.ts updated for Tailwind v4!"));
-	} else if (fs.existsSync(viteConfigPathJS)) {
+	} else {
 		fs.writeFileSync(viteConfigPathJS, viteConfigCode, "utf8");
 		console.log(chalk.green("🔧 vite.config.js updated for Tailwind v4!"));
-	} else {
-		fs.writeFileSync(viteConfigPathTS, viteConfigCode, "utf8");
-		console.log(chalk.green("🆕 vite.config.ts created for Tailwind v4!"));
 	}
 
-	// 6. Create/overwrite src/index.css with Tailwind directives
+	// 7. Create/overwrite src/index.css with Tailwind directives
 	const indexCss = path.join(process.cwd(), "src", "index.css");
 	fs.writeFileSync(indexCss, "@import 'tailwindcss';\n", "utf-8");
 	console.log(chalk.green("💡 src/index.css updated for Tailwind CSS!"));
 
-	// 7. --- Extra cleanup ---
+	// 8. --- Extra cleanup ---
 
 	// Delete src/App.css if exists
 	const appCss = path.join(process.cwd(), "src", "App.css");
 	deleteIfExists(appCss);
 	console.log(chalk.green("🗑️  src/App.css removed (if existed)."));
 
-	// Clean src/App.tsx with minimal component
-	const appTsx = path.join(process.cwd(), "src", "App.tsx");
-	if (fs.existsSync(appTsx)) {
-		const minimalComponent = `function App() {
+	// Clean src/App.tsx or App.jsx to minimal code
+	const ext = language === "ts" ? "tsx" : "jsx";
+	const appMainFile = path.join(process.cwd(), "src", `App.${ext}`);
+	if (fs.existsSync(appMainFile)) {
+		const minimalComponent =
+			language === "ts"
+				? `function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center text-2xl font-bold text-center">
+    <div className="min-h-screen flex bg-black text-white items-center justify-center text-2xl font-bold text-center">
+      Hello Vite + React + TailwindCSS!
+    </div>
+  );
+}
+
+export default App;
+`
+				: `function App() {
+  return (
+    <div className="min-h-screen flex bg-black text-white items-center justify-center text-2xl font-bold text-center">
       Hello Vite + React + TailwindCSS!
     </div>
   );
@@ -114,8 +150,8 @@ export default defineConfig({
 
 export default App;
 `;
-		fs.writeFileSync(appTsx, minimalComponent, "utf8");
-		console.log(chalk.green("✨ src/App.tsx cleaned up!"));
+		fs.writeFileSync(appMainFile, minimalComponent, "utf8");
+		console.log(chalk.green(`✨ src/App.${ext} cleaned up!`));
 	}
 
 	// Delete everything in public/
@@ -128,7 +164,7 @@ export default App;
 	deleteIfExists(assetsDir);
 	console.log(chalk.green("🗑️  src/assets folder removed (if existed)."));
 
-	// 8. Final message
+	// 9. Final message
 	console.log(chalk.greenBright.bold("\n🎉 Project setup complete! 🚀\n"));
 	console.log(chalk.yellowBright("Next steps:"));
 	console.log(chalk.yellow(`  cd ${projectName}`));
