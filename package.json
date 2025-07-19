@@ -1,6 +1,6 @@
 {
 	"name": "create-vrtw",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "CLI to scaffold a Vite + React + (TypeScript/JavaScript) + Tailwind v4 project with one command.",
 	"author": "Avijit Dey <deyavijit134@gmail.com>",
 	"main": "index.js",
@@ -25,7 +25,7 @@
 		"type": "git",
 		"url": "https://github.com/avijit07x/create-vrtw.git"
 	},
-	"homepage": "https://github.com/avijit07x/create-vrtw.git#readme",
+	"homepage": "https://vrtw.vercel.app",
 	"bugs": {
 		"url": "https://github.com/avijit07x/create-vrtw.git/issues"
 	},
