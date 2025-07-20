@@ -1,6 +1,6 @@
 {
 	"name": "create-vrtw",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"description": "CLI to scaffold a Vite + React + (TypeScript/JavaScript) + Tailwind v4 project with one command.",
 	"author": "Avijit Dey <deyavijit134@gmail.com>",
 	"main": "index.js",
@@ -11,6 +11,11 @@
 	"bin": {
 		"create-vrtw": "bin/index.js"
 	},
+	"files": [
+		"bin/",
+		"templates/",
+		"README.md"
+	],
 	"keywords": [
 		"vite",
 		"react",

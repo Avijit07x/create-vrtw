@@ -35,6 +35,13 @@ function cleanDir(dirPath) {
 	}
 }
 
+// Path to your templates directory
+const CURRENT_DIR = process.cwd();
+const TEMPLATES_DIR = path.join(
+	path.dirname(new URL(import.meta.url).pathname),
+	"../templates"
+);
+
 async function main() {
 	// All user prompts up front
 	const responses = await prompts([
@@ -81,11 +88,10 @@ async function main() {
 	]);
 
 	const projectName = responses.projectName?.trim() || "my-app";
-	const projectPath = path.resolve(process.cwd(), projectName);
+	const projectPath = path.resolve(CURRENT_DIR, projectName);
 	const language = responses.language;
 	const viteTemplate = language === "ts" ? "react-ts" : "react";
 	const ext = language === "ts" ? "tsx" : "jsx";
-	const installLucide = responses.installLucide;
 
 	// Scaffold Vite project
 	console.log(
@@ -149,60 +155,45 @@ async function main() {
 		stdio: "inherit",
 	});
 
-	// Overwrite vite.config.ts/js
-	const viteConfigPathTS = path.join(process.cwd(), "vite.config.ts");
-	const viteConfigPathJS = path.join(process.cwd(), "vite.config.js");
-	const viteConfigCode = `import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+	// Write vite.config
+	const viteConfigFile = `vite.config.${language === "ts" ? "ts" : "js"}`;
+	const viteConfigTarget = path.join(process.cwd(), viteConfigFile);
+	const viteConfigContent = fs.readFileSync(
+		path.join(TEMPLATES_DIR, "vite.config.template"),
+		"utf8"
+	);
+	fs.writeFileSync(viteConfigTarget, viteConfigContent, "utf8");
+	console.log(chalk.green(`🔧 ${viteConfigFile} updated for Tailwind v4!`));
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-});
-`;
-
-	if (language === "ts") {
-		fs.writeFileSync(viteConfigPathTS, viteConfigCode, "utf8");
-		console.log(chalk.green("🔧 vite.config.ts updated for Tailwind v4!"));
-	} else {
-		fs.writeFileSync(viteConfigPathJS, viteConfigCode, "utf8");
-		console.log(chalk.green("🔧 vite.config.js updated for Tailwind v4!"));
-	}
-
-	// Write Tailwind import to src/index.css
-	const indexCss = path.join(process.cwd(), "src", "index.css");
-	fs.writeFileSync(indexCss, "@import 'tailwindcss';\n", "utf-8");
+	// Write src/index.css from template
+	const indexCssTarget = path.join(process.cwd(), "src", "index.css");
+	const indexCssContent = fs.readFileSync(
+		path.join(TEMPLATES_DIR, "index.template"),
+		"utf8"
+	);
+	fs.writeFileSync(indexCssTarget, indexCssContent, "utf-8");
 	console.log(chalk.green("💡 src/index.css updated for Tailwind CSS!"));
 
-	// --- Cleanup ---
-
-	// Remove src/App.css if exists
+	// Cleanup: Remove unnecessary files/assets
 	deleteIfExists(path.join(process.cwd(), "src", "App.css"));
 	console.log(chalk.green("🗑️  src/App.css removed (if existed)."));
 
-	// Overwrite src/App.jsx/tsx with minimal example
+	// Overwrite src/App.jsx/tsx from template
 	const appMainFile = path.join(process.cwd(), "src", `App.${ext}`);
+	const appTemplateContent = fs.readFileSync(
+		path.join(TEMPLATES_DIR, "App.template"),
+		"utf8"
+	);
 	if (fs.existsSync(appMainFile)) {
-		const minimalComponent = `function App() {
-  return (
-    <div className="min-h-screen flex bg-black text-white items-center justify-center text-2xl font-bold text-center">
-      Hello Vite + React + TailwindCSS!
-    </div>
-  );
-}
-
-export default App;
-`;
-		fs.writeFileSync(appMainFile, minimalComponent, "utf8");
+		fs.writeFileSync(appMainFile, appTemplateContent, "utf8");
 		console.log(chalk.green(`✨ src/App.${ext} cleaned up!`));
 	}
 
-	// Clean public/ dir
+	// Clean public directory
 	cleanDir(path.join(process.cwd(), "public"));
 	console.log(chalk.green("🧹 public/ directory cleaned."));
 
-	// Remove src/assets dir if exists
+	// Remove src/assets directory if exists
 	deleteIfExists(path.join(process.cwd(), "src", "assets"));
 	console.log(chalk.green("🗑️  src/assets folder removed (if existed)."));
 
