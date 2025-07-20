@@ -1,7 +1,19 @@
 function App() {
 	return (
-		<div className="min-h-screen flex bg-black text-white items-center justify-center text-2xl font-bold text-center">
-			Hello Vite + React + TailwindCSS!
+		<div
+			style={{
+				height: "100vh",
+				width: "100vw",
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				backgroundColor: "black",
+				color: "white",
+				fontWeight: 600,
+				fontSize: "1.5rem",
+			}}
+		>
+			Hello Vite + React
 		</div>
 	);
 }

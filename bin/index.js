@@ -2,14 +2,11 @@
 
 import chalk from "chalk";
 import { execa } from "execa";
-import fs from "fs";
+import fs, { promises as fsp } from "fs";
 import path from "path";
 import prompts from "prompts";
 import { fileURLToPath } from "url";
 
-/**
- * Delete a file or directory if it exists.
- */
 function deleteIfExists(filePath) {
 	if (fs.existsSync(filePath)) {
 		if (fs.lstatSync(filePath).isDirectory()) {
@@ -20,9 +17,6 @@ function deleteIfExists(filePath) {
 	}
 }
 
-/**
- * Remove all contents of a directory, but not the directory itself.
- */
 function cleanDir(dirPath) {
 	if (fs.existsSync(dirPath)) {
 		for (const file of fs.readdirSync(dirPath)) {
@@ -36,14 +30,12 @@ function cleanDir(dirPath) {
 	}
 }
 
-// Path to your templates directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const CURRENT_DIR = process.cwd();
 const TEMPLATES_DIR = path.join(__dirname, "../templates");
 
 async function main() {
-	// All user prompts up front
 	const responses = await prompts([
 		{
 			type: "text",
@@ -57,6 +49,17 @@ async function main() {
 			choices: [
 				{ title: "TypeScript", value: "ts" },
 				{ title: "JavaScript", value: "js" },
+			],
+			initial: 0,
+		},
+		{
+			type: "select",
+			name: "cssFramework",
+			message: "Which CSS framework do you want to use?",
+			choices: [
+				{ title: "Tailwind CSS", value: "tailwind" },
+				{ title: "Bootstrap", value: "bootstrap" },
+				{ title: "None", value: "none" },
 			],
 			initial: 0,
 		},
@@ -85,6 +88,14 @@ async function main() {
 			active: "yes",
 			inactive: "no",
 		},
+		{
+			type: "toggle",
+			name: "gitInit",
+			message: "Would you like to initialize a git repository?",
+			initial: false,
+			active: "yes",
+			inactive: "no",
+		},
 	]);
 
 	const projectName = responses.projectName?.trim() || "my-app";
@@ -92,8 +103,8 @@ async function main() {
 	const language = responses.language;
 	const viteTemplate = language === "ts" ? "react-ts" : "react";
 	const ext = language === "ts" ? "tsx" : "jsx";
+	const indexCssPath = path.join(process.cwd(), "src", "index.css");
 
-	// Scaffold Vite project
 	console.log(
 		chalk.cyan(
 			`\n🛠️  Creating Vite React + ${
@@ -116,96 +127,124 @@ async function main() {
 
 	process.chdir(projectPath);
 
-	// Install npm dependencies for Vite project
 	console.log(chalk.cyan("\n📦 Installing npm dependencies..."));
 	await execa("npm", ["install"], { stdio: "inherit" });
 
-	// Install lucide-react if requested
-	if (responses.installLucide) {
-		console.log(chalk.cyan("\n🔗 Installing lucide-react..."));
-		await execa("npm", ["install", "lucide-react"], { stdio: "inherit" });
-		console.log(chalk.green("✨ lucide-react installed!"));
+	// Initialize a git repository
+	if (responses.gitInit) {
+		await execa("git", ["init"], { stdio: "inherit" });
+		console.log(chalk.green("✔ Git repository initialized!"));
 	}
-	// install react-router if requested
-	if (responses.installRouter) {
-		console.log(chalk.cyan("\n🔗 Installing react-router..."));
-		await execa("npm", ["install", "react-router"], { stdio: "inherit" });
-		console.log(chalk.green("✨ react-router installed!"));
-	}
-	// install Redux Toolkit and React Redux if requested
-	if (responses.installRedux) {
+
+	const additionalDeps = [];
+
+	if (responses.installLucide) additionalDeps.push("lucide-react");
+	if (responses.installRouter) additionalDeps.push("react-router");
+	if (responses.installRedux)
+		additionalDeps.push("@reduxjs/toolkit", "react-redux");
+
+	if (additionalDeps.length) {
 		console.log(
-			chalk.cyan("\n🔗 Installing @reduxjs/toolkit and react-redux...")
+			chalk.cyan(`\n📦 Installing: ${additionalDeps.join(", ")}`)
 		);
-		await execa("npm", ["install", "@reduxjs/toolkit", "react-redux"], {
+		await execa("npm", ["install", ...additionalDeps], {
 			stdio: "inherit",
 		});
-		console.log(
-			chalk.green("✨ @reduxjs/toolkit and react-redux installed!")
-		);
 	}
 
-	// Install Tailwind CSS and Vite plugin
-	console.log(
-		chalk.cyan(
-			"\n🎨 Installing Tailwind CSS and @tailwindcss/vite plugin..."
-		)
-	);
-	await execa("npm", ["install", "tailwindcss", "@tailwindcss/vite"], {
-		stdio: "inherit",
-	});
+	if (responses.cssFramework === "tailwind") {
+		console.log(
+			chalk.cyan(
+				"\n🎨 Installing Tailwind CSS and @tailwindcss/vite plugin..."
+			)
+		);
+		await execa("npm", ["install", "tailwindcss", "@tailwindcss/vite"], {
+			stdio: "inherit",
+		});
 
-	// Write vite.config
-	const viteConfigFile = `vite.config.${language === "ts" ? "ts" : "js"}`;
-	const viteConfigTarget = path.join(process.cwd(), viteConfigFile);
-	const viteConfigContent = fs.readFileSync(
-		path.join(TEMPLATES_DIR, "vite.config.template"),
-		"utf8"
-	);
-	fs.writeFileSync(viteConfigTarget, viteConfigContent, "utf8");
-	console.log(chalk.green(`🔧 ${viteConfigFile} updated for Tailwind v4!`));
+		const viteConfigFile = `vite.config.${language === "ts" ? "ts" : "js"}`;
+		const viteConfigTarget = path.join(process.cwd(), viteConfigFile);
+		const viteConfigContent = await fsp.readFile(
+			path.join(TEMPLATES_DIR, "vite.config.template"),
+			"utf8"
+		);
+		await fsp.writeFile(viteConfigTarget, viteConfigContent, "utf8");
 
-	// Write src/index.css from template
-	const indexCssTarget = path.join(process.cwd(), "src", "index.css");
-	const indexCssContent = fs.readFileSync(
-		path.join(TEMPLATES_DIR, "index.template"),
-		"utf8"
-	);
-	fs.writeFileSync(indexCssTarget, indexCssContent, "utf-8");
-	console.log(chalk.green("💡 src/index.css updated for Tailwind CSS!"));
+		const indexCssContent = await fsp.readFile(
+			path.join(TEMPLATES_DIR, "index.tailwind.template"),
+			"utf8"
+		);
+		await fsp.writeFile(indexCssPath, indexCssContent, "utf-8");
+	} else if (responses.cssFramework === "bootstrap") {
+		console.log(chalk.cyan("\n🎨 Installing Bootstrap..."));
+		await execa("npm", ["install", "bootstrap"], { stdio: "inherit" });
 
-	// Cleanup: Remove unnecessary files/assets
+		const mainFileExt = language === "ts" ? "tsx" : "jsx";
+		const mainFile = path.join(process.cwd(), "src", `main.${mainFileExt}`);
+		if (fs.existsSync(mainFile)) {
+			let mainFileContent = await fsp.readFile(mainFile, "utf8");
+			if (
+				!mainFileContent.includes(
+					"bootstrap/dist/css/bootstrap.min.css"
+				)
+			) {
+				mainFileContent =
+					"import 'bootstrap/dist/css/bootstrap.min.css';\n" +
+					mainFileContent;
+				await fsp.writeFile(mainFile, mainFileContent, "utf8");
+			}
+		}
+		if (fs.existsSync(indexCssPath)) {
+			await fsp.writeFile(indexCssPath, "", "utf8");
+		}
+	} else if (responses.cssFramework === "none") {
+		console.log(chalk.yellow("⚠️  No CSS framework will be installed."));
+		if (fs.existsSync(indexCssPath)) {
+			const indexCssContent = await fsp.readFile(
+				path.join(TEMPLATES_DIR, "index.template"),
+				"utf8"
+			);
+			await fsp.writeFile(indexCssPath, indexCssContent, "utf-8");
+		}
+	}
+
 	deleteIfExists(path.join(process.cwd(), "src", "App.css"));
-	console.log(chalk.green("🗑️  src/App.css removed (if existed)."));
 
-	// Overwrite src/App.jsx/tsx from template
 	const appMainFile = path.join(process.cwd(), "src", `App.${ext}`);
-	const appTemplateContent = fs.readFileSync(
-		path.join(TEMPLATES_DIR, "App.template"),
+	const appTemplateContent = await fsp.readFile(
+		path.join(
+			TEMPLATES_DIR,
+			responses.cssFramework === "bootstrap"
+				? "App.bootstrap.template"
+				: responses.cssFramework === "tailwind"
+				? "App.tailwind.template"
+				: "App.template"
+		),
 		"utf8"
 	);
 	if (fs.existsSync(appMainFile)) {
-		fs.writeFileSync(appMainFile, appTemplateContent, "utf8");
-		console.log(chalk.green(`✨ src/App.${ext} cleaned up!`));
+		await fsp.writeFile(appMainFile, appTemplateContent, "utf8");
 	}
 
-	// Clean public directory
 	cleanDir(path.join(process.cwd(), "public"));
-	console.log(chalk.green("🧹 public/ directory cleaned."));
-
-	// Remove src/assets directory if exists
 	deleteIfExists(path.join(process.cwd(), "src", "assets"));
-	console.log(chalk.green("🗑️  src/assets folder removed (if existed)."));
 
-	//  Finish up
 	console.log(chalk.greenBright.bold("\n🎉 Project setup complete! 🚀\n"));
 	console.log(chalk.yellowBright("Next steps:"));
 	console.log(chalk.yellow(`  cd ${projectName}`));
 	console.log(chalk.yellow("  npm run dev\n"));
-	console.log(chalk.gray("Useful docs:"));
-	console.log(
-		chalk.gray("- Tailwind CSS: https://tailwindcss.com/docs/installation")
-	);
+	if (responses.cssFramework !== "none") {
+		console.log(chalk.gray("Useful docs:"));
+	}
+	if (responses.cssFramework === "tailwind") {
+		console.log(
+			chalk.gray(
+				"- Tailwind CSS: https://tailwindcss.com/docs/installation"
+			)
+		);
+	} else if (responses.cssFramework === "bootstrap") {
+		console.log(chalk.gray("- Bootstrap: https://getbootstrap.com/docs/"));
+	}
 }
 
 main().catch((e) => {

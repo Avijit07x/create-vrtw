@@ -1,0 +1,12 @@
+function App() {
+	return (
+		<div
+			className="d-flex bg-black text-white align-items-center justify-content-center fs-3 fw-bold text-center"
+			style={{ height: "100vh", width: "100vw" }}
+		>
+			Hello Vite + React + Bootstrap!
+		</div>
+	);
+}
+
+export default App;
