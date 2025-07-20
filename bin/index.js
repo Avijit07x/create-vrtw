@@ -5,6 +5,7 @@ import { execa } from "execa";
 import fs from "fs";
 import path from "path";
 import prompts from "prompts";
+import { fileURLToPath } from "url";
 
 /**
  * Delete a file or directory if it exists.
@@ -36,11 +37,10 @@ function cleanDir(dirPath) {
 }
 
 // Path to your templates directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const CURRENT_DIR = process.cwd();
-const TEMPLATES_DIR = path.join(
-	path.dirname(new URL(import.meta.url).pathname),
-	"../templates"
-);
+const TEMPLATES_DIR = path.join(__dirname, "../templates");
 
 async function main() {
 	// All user prompts up front
