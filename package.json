@@ -1,6 +1,6 @@
 {
 	"name": "create-vrtw",
-	"version": "1.0.9",
+	"version": "1.0.10",
 	"description": "CLI to scaffold a Vite + React + (TypeScript/JavaScript) project with Tailwind CSS v4, Bootstrap 5, or none — fast and zero-config.",
 	"author": "Avijit Dey <deyavijit134@gmail.com>",
 	"main": "index.js",
@@ -14,6 +14,7 @@
 	"files": [
 		"bin/",
 		"templates/",
+		"utils/",
 		"README.md"
 	],
 	"keywords": [

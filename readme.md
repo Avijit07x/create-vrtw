@@ -72,7 +72,6 @@ function App() {
         <div>
             Hello Vite + React + TailwindCSS!
         </div>
-
     );
 }
 export default App;
