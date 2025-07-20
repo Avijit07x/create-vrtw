@@ -121,7 +121,7 @@ async function main() {
 	await execa("npm", ["install"], { stdio: "inherit" });
 
 	// Install lucide-react if requested
-	if (installLucide) {
+	if (responses.installLucide) {
 		console.log(chalk.cyan("\n🔗 Installing lucide-react..."));
 		await execa("npm", ["install", "lucide-react"], { stdio: "inherit" });
 		console.log(chalk.green("✨ lucide-react installed!"));
