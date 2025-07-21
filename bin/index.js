@@ -6,7 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 // Utility functions
-import { cleanDir, deleteIfExists } from "../utils/fsHelpers.js";
+import { cleanDir } from "../utils/fsHelpers.js";
 import { getUserInputs } from "../utils/getUserInputs.js";
 import { installAdditionalDeps } from "../utils/installDependencies.js";
 import { printFinalMessage } from "../utils/printFinalMessage.js";
@@ -35,18 +35,14 @@ async function main() {
 			} project...`
 		)
 	);
-	await execa(
-		"npm",
-		[
-			"create",
-			"vite@latest",
-			projectName,
-			"--",
-			"--template",
-			viteTemplate,
-		],
-		{ stdio: "inherit" }
-	);
+	await execa("npm", [
+		"create",
+		"vite@latest",
+		projectName,
+		"--",
+		"--template",
+		viteTemplate,
+	]);
 
 	process.chdir(projectPath);
 	const indexCssPath = path.join(process.cwd(), "src", "index.css");
@@ -76,7 +72,7 @@ async function main() {
 
 	// Clean up default files
 	cleanDir(path.join(process.cwd(), "public"));
-	deleteIfExists(path.join(process.cwd(), "src", "assets"));
+	cleanDir(path.join(process.cwd(), "src", "assets"));
 
 	// Final instructions and helpful links
 	printFinalMessage(responses, projectName);

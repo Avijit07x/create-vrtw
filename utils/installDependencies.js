@@ -8,6 +8,7 @@ export async function installAdditionalDeps(responses) {
 	if (responses.installRouter) additionalDeps.push("react-router");
 	if (responses.installRedux)
 		additionalDeps.push("@reduxjs/toolkit", "react-redux");
+	if (responses.installAxios) additionalDeps.push("axios");
 
 	if (additionalDeps.length) {
 		console.log(

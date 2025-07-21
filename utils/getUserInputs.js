@@ -55,6 +55,14 @@ export async function getUserInputs() {
 		},
 		{
 			type: "toggle",
+			name: "installAxios",
+			message: "Would you like to install axios?",
+			initial: true,
+			active: "yes",
+			inactive: "no",
+		},
+		{
+			type: "toggle",
 			name: "gitInit",
 			message: "Would you like to initialize a git repository?",
 			initial: false,
