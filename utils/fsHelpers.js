@@ -1,25 +1,51 @@
-import fs from "fs";
+import { access, readdir, readFile, rm, stat, unlink, writeFile } from "fs/promises";
+import os from "os";
 import path from "path";
 
-export function deleteIfExists(filePath) {
-	if (fs.existsSync(filePath)) {
-		if (fs.lstatSync(filePath).isDirectory()) {
-			fs.rmSync(filePath, { recursive: true, force: true });
+const configPath = path.join(os.homedir(), ".vrtw-config.json");
+
+export async function deleteIfExists(filePath) {
+	try {
+		await access(filePath);
+		const stats = await stat(filePath);
+		if (stats.isDirectory()) {
+			await rm(filePath, { recursive: true, force: true });
 		} else {
-			fs.unlinkSync(filePath);
+			await unlink(filePath);
 		}
+	} catch (err) {
+		// File doesn't exist, skip silently
 	}
 }
 
-export function cleanDir(dirPath) {
-	if (fs.existsSync(dirPath)) {
-		for (const file of fs.readdirSync(dirPath)) {
+export async function cleanDir(dirPath) {
+	try {
+		await access(dirPath);
+		const files = await readdir(dirPath);
+		for (const file of files) {
 			const target = path.join(dirPath, file);
-			if (fs.lstatSync(target).isDirectory()) {
-				fs.rmSync(target, { recursive: true, force: true });
+			const stats = await stat(target);
+
+			if (stats.isDirectory()) {
+				await rm(target, { recursive: true, force: true });
 			} else {
-				fs.unlinkSync(target);
+				await unlink(target);
 			}
 		}
+	} catch (err) {
+		// Folder doesn't exist, skip silently
 	}
+}
+
+export async function loadConfig() {
+	try {
+		const content = await readFile(configPath, "utf-8");
+		return JSON.parse(content);
+	} catch (err) {
+		return {};
+	}
+}
+
+export async function saveConfig(data) {
+	await writeFile(configPath, JSON.stringify(data, null, 2), "utf-8");
 }

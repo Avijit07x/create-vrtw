@@ -1,6 +1,9 @@
 import prompts from "prompts";
+import { loadConfig, saveConfig } from "./fsHelpers.js";
 
 export async function getUserInputs() {
+	const defaults = await loadConfig();
+
 	const initialResponses = await prompts([
 		{
 			type: "text",
@@ -15,14 +18,14 @@ export async function getUserInputs() {
 				{ title: "TypeScript", value: "ts" },
 				{ title: "JavaScript", value: "js" },
 			],
-			initial: 0,
+			initial: defaults.language === "js" ? 1 : 0,
 		},
 		{
 			type: "toggle",
 			name: "quickSetup",
 			message:
 				"Quick Setup? (React + Tailwind CSS + Lucide + React Router + Axios)",
-			initial: true,
+			initial: defaults.quickSetup ?? true,
 			active: "yes",
 			inactive: "no",
 		},
@@ -38,13 +41,15 @@ export async function getUserInputs() {
 				{ title: "Bootstrap", value: "bootstrap" },
 				{ title: "None", value: "none" },
 			],
-			initial: 0,
+			initial: ["tailwind", "bootstrap", "none"].indexOf(
+				defaults.cssFramework || "tailwind"
+			),
 		},
 		{
 			type: initialResponses.quickSetup ? null : "toggle",
 			name: "installLucide",
 			message: "Would you like to install lucide-react (icon library)?",
-			initial: true,
+			initial: defaults.installLucide ?? true,
 			active: "yes",
 			inactive: "no",
 		},
@@ -52,7 +57,7 @@ export async function getUserInputs() {
 			type: initialResponses.quickSetup ? null : "toggle",
 			name: "installRouter",
 			message: "Would you like to install react-router?",
-			initial: true,
+			initial: defaults.installRouter ?? true,
 			active: "yes",
 			inactive: "no",
 		},
@@ -65,14 +70,15 @@ export async function getUserInputs() {
 				{ title: "Redux Toolkit", value: "redux" },
 				{ title: "Zustand", value: "zustand" },
 			],
-			initial: 0,
+			initial: ["none", "redux", "zustand"].indexOf(
+				defaults.stateManagement || "none"
+			),
 		},
-
 		{
 			type: initialResponses.quickSetup ? null : "toggle",
 			name: "installAxios",
 			message: "Would you like to install axios?",
-			initial: initialResponses.quickSetup ? true : false,
+			initial: defaults.installAxios ?? true,
 			active: "yes",
 			inactive: "no",
 		},
@@ -80,7 +86,7 @@ export async function getUserInputs() {
 			type: "toggle",
 			name: "gitInit",
 			message: "Would you like to initialize a git repository?",
-			initial: false,
+			initial: defaults.gitInit ?? false,
 			active: "yes",
 			inactive: "no",
 		},
@@ -96,6 +102,18 @@ export async function getUserInputs() {
 		responses.installLucide = true;
 		responses.installRouter = true;
 		responses.installAxios = true;
+	}
+	if (responses.projectName) {
+		await saveConfig({
+			language: responses.language,
+			cssFramework: responses.cssFramework,
+			installLucide: responses.installLucide,
+			installRouter: responses.installRouter,
+			installAxios: responses.installAxios,
+			stateManagement: responses.stateManagement,
+			gitInit: responses.gitInit,
+			quickSetup: responses.quickSetup,
+		});
 	}
 
 	return responses;
