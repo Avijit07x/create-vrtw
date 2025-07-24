@@ -35,14 +35,18 @@ async function main() {
 			} project...`
 		)
 	);
-	await execa("npm", [
-		"create",
-		"vite@latest",
-		projectName,
-		"--",
-		"--template",
-		viteTemplate,
-	]);
+	await execa(
+		"npm",
+		[
+			"create",
+			"vite@latest",
+			projectName,
+			"--",
+			"--template",
+			viteTemplate,
+		],
+		{ stdio: "inherit" }
+	);
 
 	process.chdir(projectPath);
 	const indexCssPath = path.join(process.cwd(), "src", "index.css");

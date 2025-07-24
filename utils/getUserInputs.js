@@ -1,7 +1,7 @@
 import prompts from "prompts";
 
 export async function getUserInputs() {
-	return await prompts([
+	const initialResponses = await prompts([
 		{
 			type: "text",
 			name: "projectName",
@@ -18,7 +18,19 @@ export async function getUserInputs() {
 			initial: 0,
 		},
 		{
-			type: "select",
+			type: "toggle",
+			name: "quickSetup",
+			message:
+				"Quick Setup? (React + Tailwind CSS + Lucide + React Router + Axios)",
+			initial: true,
+			active: "yes",
+			inactive: "no",
+		},
+	]);
+
+	const moreResponses = await prompts([
+		{
+			type: initialResponses.quickSetup ? null : "select",
 			name: "cssFramework",
 			message: "Which CSS framework do you want to use?",
 			choices: [
@@ -29,7 +41,7 @@ export async function getUserInputs() {
 			initial: 0,
 		},
 		{
-			type: "toggle",
+			type: initialResponses.quickSetup ? null : "toggle",
 			name: "installLucide",
 			message: "Would you like to install lucide-react (icon library)?",
 			initial: true,
@@ -37,7 +49,7 @@ export async function getUserInputs() {
 			inactive: "no",
 		},
 		{
-			type: "toggle",
+			type: initialResponses.quickSetup ? null : "toggle",
 			name: "installRouter",
 			message: "Would you like to install react-router?",
 			initial: true,
@@ -45,19 +57,22 @@ export async function getUserInputs() {
 			inactive: "no",
 		},
 		{
-			type: "toggle",
-			name: "installRedux",
-			message:
-				"Would you like to install Redux Toolkit (and React Redux)?",
-			initial: true,
-			active: "yes",
-			inactive: "no",
+			type: "select",
+			name: "stateManagement",
+			message: "Which state management library do you want to install?",
+			choices: [
+				{ title: "None", value: "none" },
+				{ title: "Redux Toolkit", value: "redux" },
+				{ title: "Zustand", value: "zustand" },
+			],
+			initial: 0,
 		},
+
 		{
-			type: "toggle",
+			type: initialResponses.quickSetup ? null : "toggle",
 			name: "installAxios",
 			message: "Would you like to install axios?",
-			initial: true,
+			initial: initialResponses.quickSetup ? true : false,
 			active: "yes",
 			inactive: "no",
 		},
@@ -70,4 +85,18 @@ export async function getUserInputs() {
 			inactive: "no",
 		},
 	]);
+
+	const responses = {
+		...initialResponses,
+		...moreResponses,
+	};
+
+	if (responses.quickSetup) {
+		responses.cssFramework = "tailwind";
+		responses.installLucide = true;
+		responses.installRouter = true;
+		responses.installAxios = true;
+	}
+
+	return responses;
 }

@@ -6,8 +6,11 @@ export async function installAdditionalDeps(responses) {
 
 	if (responses.installLucide) additionalDeps.push("lucide-react");
 	if (responses.installRouter) additionalDeps.push("react-router");
-	if (responses.installRedux)
+	if (responses.stateManagement === "redux") {
 		additionalDeps.push("@reduxjs/toolkit", "react-redux");
+	} else if (responses.stateManagement === "zustand") {
+		additionalDeps.push("zustand");
+	}
 	if (responses.installAxios) additionalDeps.push("axios");
 
 	if (additionalDeps.length) {

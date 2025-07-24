@@ -10,7 +10,7 @@ Unnecessary files and assets are auto-cleaned, so you get a fresh, production-re
 -   **CSS Framework Choice**:  
     Choose between **Tailwind CSS v4**, **Bootstrap v5**, or _no CSS framework_
 -   **Tailwind v4 with official Vite plugin** or **Bootstrap 5** ready to use instantly
--   **Extra Libraries (optional)**: Add [Lucide icons](https://lucide.dev/), [React Router](https://reactrouter.com/), and [Redux Toolkit](https://redux-toolkit.js.org/) in one step
+-   **Extra Libraries (optional)**: Add Lucide icons, React Router, Redux Toolkit, Zustand, and Axios in one step
 -   **Automatic Cleanup**: Removes default assets, public files, boilerplate noise
 -   **Ready-to-Code**: Minimal `App.jsx` / `App.tsx`, clean folder, and CSS framework imported for you
 -   **One Command, Super Fast!**
@@ -39,6 +39,8 @@ create-vrtw
     - [Lucide](https://lucide.dev/) (icon library)
     - [React Router](https://reactrouter.com/)
     - [Redux Toolkit](https://redux-toolkit.js.org/) (+ React Redux)
+    - [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) (lightweight state manager)
+    - [Axios](https://axios-http.com/)
 5. Creates a Vite + React app (chosen language)
 6. Installs your chosen CSS framework, and configures everything for it:
     - **Tailwind**: Adds plugin, config, template CSS file
@@ -68,11 +70,7 @@ my-app/
 
 ```jsx
 function App() {
-    return (
-        <div>
-            Hello Vite + React + TailwindCSS!
-        </div>
-    );
+	return <div>Hello Vite + React + TailwindCSS!</div>;
 }
 export default App;
 ```
@@ -84,6 +82,8 @@ export default App;
 -   **[lucide-react](https://lucide.dev/icons)** (icon components)
 -   **[react-router](https://reactrouter.com/)**
 -   **[@reduxjs/toolkit](https://redux-toolkit.js.org/) + [react-redux](https://react-redux.js.org/)**
+-   **[zustand](https://github.com/pmndrs/zustand)** (lightweight state manager)
+-   **[axios](https://axios-http.com/)** (for API requests)
 
 These are **optional** – just answer “yes” at the prompt!
 
@@ -96,6 +96,8 @@ These are **optional** – just answer “yes” at the prompt!
 -   [Lucide Icons](https://lucide.dev/)
 -   [React Router](https://reactrouter.com/en/main/start/tutorial)
 -   [Redux Toolkit](https://redux-toolkit.js.org/)
+-   [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
+-   [Axios](https://axios-http.com/)
 
 ## ❤️ Contribute
 
