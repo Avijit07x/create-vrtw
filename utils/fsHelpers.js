@@ -1,4 +1,12 @@
-import { access, readdir, readFile, rm, stat, unlink, writeFile } from "fs/promises";
+import {
+	access,
+	readdir,
+	readFile,
+	rm,
+	stat,
+	unlink,
+	writeFile,
+} from "fs/promises";
 import os from "os";
 import path from "path";
 
@@ -48,4 +56,13 @@ export async function loadConfig() {
 
 export async function saveConfig(data) {
 	await writeFile(configPath, JSON.stringify(data, null, 2), "utf-8");
+}
+
+export async function configExists() {
+	try {
+		await access(configPath);
+		return true;
+	} catch {
+		return false;
+	}
 }
