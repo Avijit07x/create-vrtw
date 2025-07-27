@@ -24,7 +24,7 @@ export async function getUserInputs() {
 			type: "toggle",
 			name: "quickSetup",
 			message:
-				"Quick Setup? (React + Tailwind CSS + Lucide + React Router + Axios)",
+				"Quick Setup? (React + Tailwind CSS + React Icons + React Router + Axios)",
 			initial: defaults.quickSetup ?? true,
 			active: "yes",
 			inactive: "no",
@@ -47,9 +47,9 @@ export async function getUserInputs() {
 		},
 		{
 			type: initialResponses.quickSetup ? null : "toggle",
-			name: "installLucide",
-			message: "Would you like to install lucide-react (icon library)?",
-			initial: defaults.installLucide ?? true,
+			name: "installReactIcons",
+			message: "Would you like to install react-icons (icon library)?",
+			initial: defaults.installReactIcons ?? true,
 			active: "yes",
 			inactive: "no",
 		},
@@ -99,7 +99,7 @@ export async function getUserInputs() {
 
 	if (responses.quickSetup) {
 		responses.cssFramework = "tailwind";
-		responses.installLucide = true;
+		responses.installReactIcons = true;
 		responses.installRouter = true;
 		responses.installAxios = true;
 	}
@@ -107,7 +107,7 @@ export async function getUserInputs() {
 		await saveConfig({
 			language: responses.language,
 			cssFramework: responses.cssFramework,
-			installLucide: responses.installLucide,
+			installReactIcons: responses.installReactIcons,
 			installRouter: responses.installRouter,
 			installAxios: responses.installAxios,
 			stateManagement: responses.stateManagement,

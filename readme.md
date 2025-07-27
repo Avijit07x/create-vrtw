@@ -1,7 +1,7 @@
 # create-vrtw
 
 A zero-config CLI to instantly scaffold a modern front-end project with **[Vite](https://vitejs.dev/)**, **[React](https://react.dev/learn)** (JavaScript or TypeScript), and your choice of **[Tailwind CSS v4](https://tailwindcss.com/)** (with the new **[@tailwindcss/vite](https://tailwindcss.com/docs/installation#vite-plugin)** plugin) **or [Bootstrap v5](https://getbootstrap.com/)** — or no CSS framework at all.  
-Optional extras (with one prompt!): **Lucide icons, React Router, Redux Toolkit**.  
+Optional extras (with one prompt!): **react-icons, React Router, Redux Toolkit**.  
 Unnecessary files and assets are auto-cleaned, so you get a fresh, production-ready workspace in seconds.
 
 ## ✨ Features
@@ -10,7 +10,7 @@ Unnecessary files and assets are auto-cleaned, so you get a fresh, production-re
 -   **CSS Framework Choice**:  
     Choose between **Tailwind CSS v4**, **Bootstrap v5**, or _no CSS framework_
 -   **Tailwind v4 with official Vite plugin** or **Bootstrap 5** ready to use instantly
--   **Extra Libraries (optional)**: Add Lucide icons, React Router, Redux Toolkit, Zustand, and Axios in one step
+-   **Extra Libraries (optional)**: Add react-icons, React Router, Redux Toolkit, Zustand, and Axios in one step
 -   **Automatic Cleanup**: Removes default assets, public files, boilerplate noise
 -   **Ready-to-Code**: Minimal `App.jsx` / `App.tsx`, clean folder, and CSS framework imported for you
 -   **One Command, Super Fast!**
@@ -36,7 +36,7 @@ create-vrtw
     - [Bootstrap v5](https://getbootstrap.com/docs/)
     - None
 4. Optionally: Install
-    - [Lucide](https://lucide.dev/) (icon library)
+    - [react-icons](https://react-icons.github.io/react-icons/) (icon library)
     - [React Router](https://reactrouter.com/)
     - [Redux Toolkit](https://redux-toolkit.js.org/) (+ React Redux)
     - [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) (lightweight state manager)
@@ -70,8 +70,14 @@ my-app/
 
 ```jsx
 function App() {
-	return <div>Hello Vite + React + TailwindCSS!</div>;
+    
+	return (
+		<div>
+			Hello Vite + React + TailwindCSS!
+		</div>
+	);
 }
+
 export default App;
 ```
 
@@ -79,7 +85,7 @@ export default App;
 
 > If you choose at the prompt, the following will also be installed:
 
--   **[lucide-react](https://lucide.dev/icons)** (icon components)
+-   **[react-icons](https://react-icons.github.io/react-icons/)** (icon components)
 -   **[react-router](https://reactrouter.com/)**
 -   **[@reduxjs/toolkit](https://redux-toolkit.js.org/) + [react-redux](https://react-redux.js.org/)**
 -   **[zustand](https://github.com/pmndrs/zustand)** (lightweight state manager)
@@ -93,7 +99,7 @@ These are **optional** – just answer “yes” at the prompt!
 -   [React Quick Start](https://react.dev/learn)
 -   [Tailwind CSS v4](https://tailwindcss.com/docs/installation)
 -   [Bootstrap Docs](https://getbootstrap.com/docs/)
--   [Lucide Icons](https://lucide.dev/)
+-   [React Icons](https://react-icons.github.io/react-icons/)
 -   [React Router](https://reactrouter.com/en/main/start/tutorial)
 -   [Redux Toolkit](https://redux-toolkit.js.org/)
 -   [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)

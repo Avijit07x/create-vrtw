@@ -4,7 +4,7 @@ import { execa } from "execa";
 export async function installAdditionalDeps(responses) {
 	const additionalDeps = [];
 
-	if (responses.installLucide) additionalDeps.push("lucide-react");
+	if (responses.installReactIcons) additionalDeps.push("react-icons");
 	if (responses.installRouter) additionalDeps.push("react-router");
 	if (responses.stateManagement === "redux") {
 		additionalDeps.push("@reduxjs/toolkit", "react-redux");
