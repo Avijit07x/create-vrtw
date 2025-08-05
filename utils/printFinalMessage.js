@@ -2,10 +2,7 @@ import chalk from "chalk";
 
 export function printFinalMessage(responses, projectName) {
 	console.log(chalk.greenBright.bold("\n🎉 Project setup complete! 🚀\n"));
-	console.log(chalk.yellowBright("Next steps:"));
-	console.log(chalk.yellow(`  cd ${projectName}`));
-	console.log(chalk.yellow("  npm run dev\n"));
-
+	
 	if (responses.cssFramework !== "none") {
 		console.log(chalk.gray("Useful docs:"));
 	}

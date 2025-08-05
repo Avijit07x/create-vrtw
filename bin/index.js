@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 import { cleanDir } from "../utils/fsHelpers.js";
 import { getUserInputs } from "../utils/getUserInputs.js";
 import { installAdditionalDeps } from "../utils/installDependencies.js";
+import { openDevServerAndLaunchBrowser } from "../utils/openDevServer.js";
 import { printFinalMessage } from "../utils/printFinalMessage.js";
 import { setupCssFramework } from "../utils/setupCssFramework.js";
 
@@ -80,6 +81,9 @@ async function main() {
 
 	// Final instructions and helpful links
 	printFinalMessage(responses, projectName);
+
+	// Open dev server and launch browser
+	await openDevServerAndLaunchBrowser(projectPath);
 }
 
 // Handle unexpected errors
