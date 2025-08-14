@@ -20,9 +20,13 @@ export async function setupCssFramework({
 				"\n🎨 Installing Tailwind CSS and @tailwindcss/vite plugin..."
 			)
 		);
-		await execa("npm", ["install", "tailwindcss", "@tailwindcss/vite"], {
-			stdio: "inherit",
-		});
+		await execa(
+			"npm",
+			["install", "-D", "tailwindcss", "@tailwindcss/vite"],
+			{
+				stdio: "inherit",
+			}
+		);
 
 		const viteConfigFile = `vite.config.${language === "ts" ? "ts" : "js"}`;
 		const viteConfigTarget = path.join(process.cwd(), viteConfigFile);
