@@ -5,7 +5,7 @@ export async function installAdditionalDeps(responses) {
 	const additionalDeps = [];
 
 	if (responses.installReactIcons) additionalDeps.push("react-icons");
-	if (responses.installRouter) additionalDeps.push("react-router");
+	if (responses.installRouter) additionalDeps.push("react-router-dom");
 	if (responses.stateManagement === "redux") {
 		additionalDeps.push("@reduxjs/toolkit", "react-redux");
 	} else if (responses.stateManagement === "zustand") {
