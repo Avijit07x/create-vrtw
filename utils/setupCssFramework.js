@@ -17,7 +17,7 @@ export async function setupCssFramework({
 	if (cssFramework === "tailwind") {
 		console.log(
 			chalk.cyan(
-				"\n🎨 Installing Tailwind CSS and @tailwindcss/vite plugin..."
+				"\nInstalling Tailwind CSS and @tailwindcss/vite plugin..."
 			)
 		);
 		await execa(
@@ -42,7 +42,7 @@ export async function setupCssFramework({
 		);
 		await fsp.writeFile(indexCssPath, indexCssContent, "utf-8");
 	} else if (cssFramework === "bootstrap") {
-		console.log(chalk.cyan("\n🎨 Installing Bootstrap..."));
+		console.log(chalk.cyan("\nInstalling Bootstrap..."));
 		await execa("npm", ["install", "bootstrap"], { stdio: "inherit" });
 
 		const mainFileExt = language === "ts" ? "tsx" : "jsx";
@@ -64,7 +64,7 @@ export async function setupCssFramework({
 			await fsp.writeFile(indexCssPath, "", "utf8");
 		}
 	} else if (cssFramework === "none") {
-		console.log(chalk.yellow("⚠️  No CSS framework will be installed."));
+		console.log(chalk.yellow("No CSS framework will be installed."));
 		if (fs.existsSync(indexCssPath)) {
 			const indexCssContent = await fsp.readFile(
 				path.join(TEMPLATES_DIR, "index.template"),

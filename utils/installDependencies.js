@@ -15,7 +15,7 @@ export async function installAdditionalDeps(responses) {
 
 	if (additionalDeps.length) {
 		console.log(
-			chalk.cyan(`\n📦 Installing: ${additionalDeps.join(", ")}`)
+			chalk.cyan(`\nInstalling: ${additionalDeps.join(", ")}`)
 		);
 		await execa("npm", ["install", ...additionalDeps], {
 			stdio: "inherit",

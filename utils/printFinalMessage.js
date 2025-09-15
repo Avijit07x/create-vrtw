@@ -1,7 +1,7 @@
 import chalk from "chalk";
 
 export function printFinalMessage(responses, projectName) {
-	console.log(chalk.greenBright.bold("\n🎉 Project setup complete! 🚀\n"));
+	console.log(chalk.greenBright.bold("\n✔ Project setup complete!\n"));
 	
 	if (responses.cssFramework !== "none") {
 		console.log(chalk.gray("Useful docs:"));

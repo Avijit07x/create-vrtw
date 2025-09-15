@@ -4,7 +4,7 @@ A zero-config CLI to instantly scaffold a modern front-end project with **[Vite]
 Optional extras (with one prompt!): **react-icons, React Router, Redux Toolkit**.  
 Unnecessary files and assets are auto-cleaned, so you get a fresh, production-ready workspace in seconds.
 
-## ✨ Features
+## Features
 
 -   **Vite + React + JavaScript/TypeScript**: Fast, modern development stack
 -   **CSS Framework Choice**:  
@@ -15,7 +15,7 @@ Unnecessary files and assets are auto-cleaned, so you get a fresh, production-re
 -   **Ready-to-Code**: Minimal `App.jsx` / `App.tsx`, clean folder, and CSS framework imported for you
 -   **One Command, Super Fast!**
 
-## 🚀 Quick Start
+## Quick Start
 
 ```sh
 npx create-vrtw
@@ -27,7 +27,7 @@ _or if installed globally:_
 create-vrtw
 ```
 
-## 🪄 What Happens?
+## What Happens?
 
 1. Prompts for your **project name**
 2. Asks: **JavaScript or TypeScript?**
@@ -37,10 +37,10 @@ create-vrtw
     - None
 4. Optionally: Install
     - [react-icons](https://react-icons.github.io/react-icons/) (icon library)
-    - [React Router](https://reactrouter.com/)
-    - [Redux Toolkit](https://redux-toolkit.js.org/) (+ React Redux)
-    - [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) (lightweight state manager)
-    - [Axios](https://axios-http.com/)
+    - [react Router](https://reactrouter.com/)
+    - [redux toolkit](https://redux-toolkit.js.org/) (+ React Redux)
+    - [zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) (lightweight state manager)
+    - [axios](https://axios-http.com/)
 5. Creates a Vite + React app (chosen language)
 6. Installs your chosen CSS framework, and configures everything for it:
     - **Tailwind**: Adds plugin, config, template CSS file
@@ -51,7 +51,7 @@ create-vrtw
 8. Your starting `App` component matches your CSS framework
 9. Shows next steps — just `cd` and `npm run dev`!
 
-## 🗂️ Example File Structure
+## Example File Structure
 
 ```
 my-app/
@@ -66,22 +66,19 @@ my-app/
 └── ...
 ```
 
-## 🏗️ Example App Component (After Setup)
+## Example App Component (After Setup)
 
 ```jsx
 function App() {
-    
 	return (
-		<div>
-			Hello Vite + React + TailwindCSS!
-		</div>
-	);
+        <div>Hello Vite + React + TailwindCSS!</div>
+    )
 }
 
 export default App;
 ```
 
-## 📦 Optional Extras
+## Optional Extras
 
 > If you choose at the prompt, the following will also be installed:
 
@@ -93,7 +90,7 @@ export default App;
 
 These are **optional** – just answer “yes” at the prompt!
 
-## 📚 Documentation
+## Documentation
 
 -   [Vite Guide](https://vitejs.dev/guide/)
 -   [React Quick Start](https://react.dev/learn)
@@ -105,13 +102,13 @@ These are **optional** – just answer “yes” at the prompt!
 -   [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
 -   [Axios](https://axios-http.com/)
 
-## ❤️ Contribute
+## Contribute
 
 Got feedback or want to add features?  
 [Open an issue or pull request!](https://github.com/avijit07x/create-vrtw)
 
-## 📄 License
+## License
 
 MIT
 
-**Enjoy building fast, clean React UIs—with zero fuss! 🚀**
+**Enjoy building fast, clean React UIs—with zero fuss!**

@@ -31,7 +31,7 @@ async function main() {
 	// Create Vite project using selected template
 	console.log(
 		chalk.cyan(
-			`\n🛠️  Creating Vite React + ${
+			`\nCreating Vite React + ${
 				language === "ts" ? "TypeScript" : "JavaScript"
 			} project...`
 		)
@@ -53,7 +53,7 @@ async function main() {
 	const indexCssPath = path.join(process.cwd(), "src", "index.css");
 
 	// Install default Vite dependencies
-	console.log(chalk.cyan("\n📦 Installing npm dependencies..."));
+	console.log(chalk.cyan("\nInstalling npm dependencies..."));
 	await execa("npm", ["install"], { stdio: "inherit" });
 
 	// Initialize Git if selected
@@ -88,6 +88,6 @@ async function main() {
 
 // Handle unexpected errors
 main().catch((e) => {
-	console.error(chalk.red("❌ Error:"), e.message || e);
+	console.error(chalk.red("Error:"), e.message || e);
 	process.exit(1);
 });
