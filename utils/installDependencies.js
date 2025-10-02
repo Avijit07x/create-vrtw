@@ -12,11 +12,10 @@ export async function installAdditionalDeps(responses) {
 		additionalDeps.push("zustand");
 	}
 	if (responses.installAxios) additionalDeps.push("axios");
+	additionalDeps.push("vite@latest");
 
 	if (additionalDeps.length) {
-		console.log(
-			chalk.cyan(`\nInstalling: ${additionalDeps.join(", ")}`)
-		);
+		console.log(chalk.cyan(`\nInstalling: ${additionalDeps.join(", ")}`));
 		await execa("npm", ["install", ...additionalDeps], {
 			stdio: "inherit",
 		});

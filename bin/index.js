@@ -11,7 +11,6 @@ import { confirmEmptyFolder } from "../utils/confirmEmptyFolder.js";
 import { cleanDir } from "../utils/fsHelpers.js";
 import { getUserInputs, onCancel } from "../utils/getUserInputs.js";
 import { installAdditionalDeps } from "../utils/installDependencies.js";
-import { openDevServerAndLaunchBrowser } from "../utils/openDevServer.js";
 import { printFinalMessage } from "../utils/printFinalMessage.js";
 import { setupCssFramework } from "../utils/setupCssFramework.js";
 
@@ -84,8 +83,7 @@ async function main() {
 	cleanDir(path.join(process.cwd(), "src", "assets"));
 
 	printFinalMessage(responses, projectName);
-
-	await openDevServerAndLaunchBrowser(projectPath);
+	await execa("npm", ["run", "dev"], { stdio: "inherit" });
 }
 
 // Handle unexpected errors
