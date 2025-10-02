@@ -1,4 +1,4 @@
-function App() {
+const App = () => {
 	return (
 		<div
 			className="d-flex bg-black text-white align-items-center justify-content-center fs-3 fw-bold text-center"
@@ -7,6 +7,6 @@ function App() {
 			Hello Vite + React + Bootstrap!
 		</div>
 	);
-}
+};
 
 export default App;

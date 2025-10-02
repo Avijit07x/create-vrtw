@@ -1,22 +1,12 @@
 import prompts from "prompts";
 import { configExists, loadConfig, saveConfig } from "./fsHelpers.js";
 
-function onCancel() {
+export function onCancel() {
 	console.log("\nOperation cancelled by user.");
 	process.exit(1);
 }
 
-export async function getUserInputs() {
-	const { projectName } = await prompts(
-		{
-			type: "text",
-			name: "projectName",
-			message: "Enter your project name:",
-			validate: (name) => !!name || "Project name is required!",
-		},
-		{ onCancel }
-	);
-
+export async function getUserInputs(projectName) {
 	let oldConfig = {};
 	let useOldConfig = false;
 

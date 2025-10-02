@@ -1,4 +1,4 @@
-function App() {
+const App = () => {
 	return (
 		<div
 			style={{
@@ -16,6 +16,6 @@ function App() {
 			Hello Vite + React
 		</div>
 	);
-}
+};
 
 export default App;
