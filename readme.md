@@ -27,6 +27,12 @@ _or if installed globally:_
 create-vrtw
 ```
 
+_or using Bun:_
+
+```sh
+bunx create-vrtw --bun
+```
+
 ## What Happens?
 
 1. Prompts for your **project name**
@@ -70,9 +76,7 @@ my-app/
 
 ```jsx
 function App() {
-	return (
-        <div>Hello Vite + React + TailwindCSS!</div>
-    )
+	return <div>Hello Vite + React + TailwindCSS!</div>;
 }
 
 export default App;

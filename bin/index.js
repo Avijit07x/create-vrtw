@@ -20,6 +20,9 @@ const CURRENT_DIR = process.cwd();
 const TEMPLATES_DIR = path.join(__dirname, "../templates");
 
 async function main() {
+	const argv = process.argv.slice(2);
+	const useBun = argv.includes("--bun");
+
 	const { projectName } = await prompts(
 		{
 			type: "text",
@@ -29,7 +32,9 @@ async function main() {
 		},
 		{ onCancel }
 	);
+
 	await confirmEmptyFolder(projectName);
+
 	const responses = await getUserInputs(projectName);
 
 	const projectPath = path.resolve(CURRENT_DIR, projectName);
@@ -44,31 +49,41 @@ async function main() {
 			} project...`
 		)
 	);
-	await execa(
-		"npm",
-		[
-			"create",
-			"vite@latest",
-			projectName,
-			"--",
-			"--template",
-			viteTemplate,
-		],
-		{ stdio: ["pipe"] }
-	);
+
+	const createExe = useBun ? "bun" : "npm";
+	const createArgs = [
+		"create",
+		"vite@latest",
+		projectName,
+		!useBun && "--",
+		"--template",
+		viteTemplate,
+	];
+
+	await execa(createExe, createArgs, { stdio: ["pipe"] });
 
 	process.chdir(projectPath);
+
 	const indexCssPath = path.join(process.cwd(), "src", "index.css");
 
-	console.log(chalk.cyan("\nInstalling npm dependencies..."));
-	await execa("npm", ["install"], { stdio: "inherit" });
+	console.log(
+		chalk.cyan(
+			`\nInstalling dependencies using ${useBun ? "bun" : "npm"}...`
+		)
+	);
+
+	if (useBun) {
+		await execa("bun", ["install"], { stdio: "inherit" });
+	} else {
+		await execa("npm", ["install"], { stdio: "inherit" });
+	}
 
 	if (responses.gitInit) {
 		await execa("git", ["init"], { stdio: "inherit" });
 		console.log(chalk.green("✔ Git repository initialized!"));
 	}
 
-	await installAdditionalDeps(responses);
+	await installAdditionalDeps(responses, { useBun });
 
 	await setupCssFramework({
 		projectPath,
@@ -77,16 +92,17 @@ async function main() {
 		cssFramework: responses.cssFramework,
 		indexCssPath,
 		ext,
+		useBun,
 	});
 
 	cleanDir(path.join(process.cwd(), "public"));
 	cleanDir(path.join(process.cwd(), "src", "assets"));
 
 	printFinalMessage(responses, projectName);
-	await execa("npm", ["run", "dev"], { stdio: "inherit" });
+
+	await execa(useBun ? "bun" : "npm", ["run", "dev"], { stdio: "inherit" });
 }
 
-// Handle unexpected errors
 main().catch((e) => {
 	console.error(chalk.red("Error:"), e.message || e);
 	process.exit(1);

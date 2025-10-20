@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { execa } from "execa";
 
-export async function installAdditionalDeps(responses) {
+export async function installAdditionalDeps(responses, { useBun } = {}) {
 	const additionalDeps = [];
 
 	if (responses.installReactIcons) additionalDeps.push("react-icons");
@@ -16,8 +16,10 @@ export async function installAdditionalDeps(responses) {
 
 	if (additionalDeps.length) {
 		console.log(chalk.cyan(`\nInstalling: ${additionalDeps.join(", ")}`));
-		await execa("npm", ["install", ...additionalDeps], {
-			stdio: "inherit",
-		});
+		const installer = useBun ? "bun" : "npm";
+		const args = useBun
+			? ["add", ...additionalDeps]
+			: ["install", ...additionalDeps];
+		await execa(installer, args, { stdio: "inherit" });
 	}
 }

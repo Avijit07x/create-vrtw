@@ -11,6 +11,7 @@ export async function setupCssFramework({
 	cssFramework,
 	indexCssPath,
 	ext,
+	useBun = false,
 }) {
 	process.chdir(projectPath);
 
@@ -20,13 +21,23 @@ export async function setupCssFramework({
 				"\nInstalling Tailwind CSS and @tailwindcss/vite plugin..."
 			)
 		);
-		await execa(
-			"npm",
-			["install", "-D", "tailwindcss", "@tailwindcss/vite"],
-			{
-				stdio: "inherit",
-			}
-		);
+		if (useBun) {
+			await execa(
+				"bun",
+				["add", "-d", "tailwindcss", "@tailwindcss/vite"],
+				{
+					stdio: "inherit",
+				}
+			);
+		} else {
+			await execa(
+				"npm",
+				["install", "-D", "tailwindcss", "@tailwindcss/vite"],
+				{
+					stdio: "inherit",
+				}
+			);
+		}
 
 		const viteConfigFile = `vite.config.${language === "ts" ? "ts" : "js"}`;
 		const viteConfigTarget = path.join(process.cwd(), viteConfigFile);
@@ -43,7 +54,11 @@ export async function setupCssFramework({
 		await fsp.writeFile(indexCssPath, indexCssContent, "utf-8");
 	} else if (cssFramework === "bootstrap") {
 		console.log(chalk.cyan("\nInstalling Bootstrap..."));
-		await execa("npm", ["install", "bootstrap"], { stdio: "inherit" });
+		if (useBun) {
+			await execa("bun", ["add", "bootstrap"], { stdio: "inherit" });
+		} else {
+			await execa("npm", ["install", "bootstrap"], { stdio: "inherit" });
+		}
 
 		const mainFileExt = language === "ts" ? "tsx" : "jsx";
 		const mainFile = path.join(process.cwd(), "src", `main.${mainFileExt}`);
