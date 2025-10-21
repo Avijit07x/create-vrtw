@@ -1,6 +1,6 @@
 {
 	"name": "create-vrtw",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"description": "Zero-config CLI to scaffold a modern Vite + React (TS/JS) project with Tailwind CSS v4, Bootstrap 5, or none, plus optional extras: react-icons, React Router, Redux Toolkit, Zustand, Axios – and auto-cleaned boilerplate.",
 	"author": "Avijit Dey <deyavijit134@gmail.com>",
 	"main": "index.js",
@@ -15,6 +15,7 @@
 		"bin/",
 		"templates/",
 		"utils/",
+		"assets/",
 		"README.md"
 	],
 	"keywords": [

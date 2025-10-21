@@ -1,6 +1,7 @@
 <br>
 
 <div align="center">
+  <img  src="./assets/logo.png" alt="preview" />
   <img src="https://img.shields.io/npm/v/create-vrtw" alt="npm version" />
   <img src="https://img.shields.io/npm/dm/create-vrtw" alt="npm downloads" />
   <img src="https://github.com/avijit07x/create-vrtw/actions/workflows/publish.yml/badge.svg" alt="CI status" />
