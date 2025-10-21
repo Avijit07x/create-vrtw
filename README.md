@@ -30,7 +30,7 @@ create-vrtw
 _or using Bun:_
 
 ```sh
-bunx create-vrtw --bun
+bunx create-vrtw
 ```
 
 ## What Happens?

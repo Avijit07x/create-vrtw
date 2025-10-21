@@ -1,8 +1,8 @@
 import chalk from "chalk";
-import { execa } from "execa";
 import fs, { promises as fsp } from "fs";
 import path from "path";
 import { deleteIfExists } from "./fsHelpers.js";
+import { installDeps } from "./installDeps.js";
 
 export async function setupCssFramework({
 	projectPath,
@@ -11,7 +11,7 @@ export async function setupCssFramework({
 	cssFramework,
 	indexCssPath,
 	ext,
-	useBun = false,
+	pkg,
 }) {
 	process.chdir(projectPath);
 
@@ -21,23 +21,8 @@ export async function setupCssFramework({
 				"\nInstalling Tailwind CSS and @tailwindcss/vite plugin..."
 			)
 		);
-		if (useBun) {
-			await execa(
-				"bun",
-				["add", "-d", "tailwindcss", "@tailwindcss/vite"],
-				{
-					stdio: "inherit",
-				}
-			);
-		} else {
-			await execa(
-				"npm",
-				["install", "-D", "tailwindcss", "@tailwindcss/vite"],
-				{
-					stdio: "inherit",
-				}
-			);
-		}
+
+		await installDeps(pkg, true, "tailwindcss", "@tailwindcss/vite");
 
 		const viteConfigFile = `vite.config.${language === "ts" ? "ts" : "js"}`;
 		const viteConfigTarget = path.join(process.cwd(), viteConfigFile);
@@ -54,11 +39,8 @@ export async function setupCssFramework({
 		await fsp.writeFile(indexCssPath, indexCssContent, "utf-8");
 	} else if (cssFramework === "bootstrap") {
 		console.log(chalk.cyan("\nInstalling Bootstrap..."));
-		if (useBun) {
-			await execa("bun", ["add", "bootstrap"], { stdio: "inherit" });
-		} else {
-			await execa("npm", ["install", "bootstrap"], { stdio: "inherit" });
-		}
+
+		await installDeps("pnpm", true, "bootstrap");
 
 		const mainFileExt = language === "ts" ? "tsx" : "jsx";
 		const mainFile = path.join(process.cwd(), "src", `main.${mainFileExt}`);

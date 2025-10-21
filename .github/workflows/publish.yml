@@ -3,6 +3,7 @@ name: Publish to npm
 on:
     push:
         branches: [main]
+        paths-ignore: "README.md"
 
 concurrency:
     group: publish-${{ github.ref }}

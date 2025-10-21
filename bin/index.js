@@ -9,6 +9,7 @@ import { fileURLToPath } from "url";
 // Utility functions
 import { confirmEmptyFolder } from "../utils/confirmEmptyFolder.js";
 import { cleanDir } from "../utils/fsHelpers.js";
+import { getPkgManager } from "../utils/getPkgManager.js";
 import { getUserInputs, onCancel } from "../utils/getUserInputs.js";
 import { installAdditionalDeps } from "../utils/installDependencies.js";
 import { printFinalMessage } from "../utils/printFinalMessage.js";
@@ -20,8 +21,13 @@ const CURRENT_DIR = process.cwd();
 const TEMPLATES_DIR = path.join(__dirname, "../templates");
 
 async function main() {
-	const argv = process.argv.slice(2);
-	const useBun = argv.includes("--bun");
+	let useNpm = false;
+
+	const pkg = getPkgManager();
+
+	if (pkg === "npm") {
+		useNpm = true;
+	}
 
 	const { projectName } = await prompts(
 		{
@@ -50,40 +56,31 @@ async function main() {
 		)
 	);
 
-	const createExe = useBun ? "bun" : "npm";
 	const createArgs = [
 		"create",
 		"vite@latest",
 		projectName,
-		!useBun && "--",
+		useNpm && "--",
 		"--template",
 		viteTemplate,
 	];
 
-	await execa(createExe, createArgs, { stdio: ["pipe"] });
+	await execa(pkg, createArgs, { stdio: ["pipe"] });
 
 	process.chdir(projectPath);
 
 	const indexCssPath = path.join(process.cwd(), "src", "index.css");
 
-	console.log(
-		chalk.cyan(
-			`\nInstalling dependencies using ${useBun ? "bun" : "npm"}...`
-		)
-	);
+	console.log(chalk.cyan(`\nInstalling dependencies using ${pkg}...`));
 
-	if (useBun) {
-		await execa("bun", ["install"], { stdio: "inherit" });
-	} else {
-		await execa("npm", ["install"], { stdio: "inherit" });
-	}
+	await execa(pkg, ["install"], { stdio: "inherit" });
 
 	if (responses.gitInit) {
 		await execa("git", ["init"], { stdio: "inherit" });
 		console.log(chalk.green("✔ Git repository initialized!"));
 	}
 
-	await installAdditionalDeps(responses, { useBun });
+	await installAdditionalDeps(responses, pkg);
 
 	await setupCssFramework({
 		projectPath,
@@ -92,7 +89,7 @@ async function main() {
 		cssFramework: responses.cssFramework,
 		indexCssPath,
 		ext,
-		useBun,
+		pkg,
 	});
 
 	cleanDir(path.join(process.cwd(), "public"));
@@ -100,7 +97,7 @@ async function main() {
 
 	printFinalMessage(responses, projectName);
 
-	await execa(useBun ? "bun" : "npm", ["run", "dev"], { stdio: "inherit" });
+	await execa(pkg, ["run", "dev"], { stdio: "inherit" });
 }
 
 main().catch((e) => {
