@@ -12,6 +12,7 @@ import { cleanDir } from "../utils/fsHelpers.js";
 import { getPkgManager } from "../utils/getPkgManager.js";
 import { getUserInputs, onCancel } from "../utils/getUserInputs.js";
 import { installAdditionalDeps } from "../utils/installDependencies.js";
+import { isYarnV1 } from "../utils/isYarnV1.js";
 import { printFinalMessage } from "../utils/printFinalMessage.js";
 import { setupCssFramework } from "../utils/setupCssFramework.js";
 
@@ -21,7 +22,7 @@ const CURRENT_DIR = process.cwd();
 const TEMPLATES_DIR = path.join(__dirname, "../templates");
 
 async function main() {
-	let useNpm = false;
+	let { useNpm, useYarn } = { useNpm: false, useYarn: false };
 
 	const pkg = getPkgManager();
 
@@ -58,7 +59,7 @@ async function main() {
 
 	const createArgs = [
 		"create",
-		"vite@latest",
+		useYarn && isYarnV1() ? "vite" : "vite@latest",
 		projectName,
 		useNpm && "--",
 		"--template",
