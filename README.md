@@ -36,19 +36,19 @@ _using npm:_
 npm create vrtw
 ```
 
-_using Bun:_
+_using bun:_
 
 ```sh
 bun create vrtw
 ```
 
-_using Pnpm:_
+_using pnpm:_
 
 ```sh
 pnpm create vrtw
 ```
 
-_using Yarn:_
+_using yarn:_
 
 ```sh
 yarn create vrtw
@@ -79,7 +79,7 @@ create-vrtw
     - **Tailwind**: Adds plugin, config, template CSS file
     - **Bootstrap**: Installs, auto-imports CSS in main file, cleans up any default index.css
 7. Wipes out unnecessary default files:
-    - Deletes: `src/App.css`, `src/assets/`, all of `public/`
+    - Deletes: `src/App.css`, all of `public/`
     - Cleans/minimizes: `src/App.jsx` / `src/App.tsx` and `src/index.css`
 8. Your starting `App` component matches your CSS framework
 9. Shows next steps — just `cd` and `npm run dev`!
