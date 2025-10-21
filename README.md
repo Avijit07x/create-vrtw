@@ -13,7 +13,7 @@
 </div>
 <br>
 
-# create-vrtw
+<div align="center" style="font-size: 3rem; font-weight: 600; margin-bottom: 1rem">create-vrtw</div>
 
 > Scaffold a modern Vite + React + Tailwind/Bootstrap app in seconds — zero config, one prompt.
 
