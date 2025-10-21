@@ -1,6 +1,6 @@
+import { isCancel, select } from "@clack/prompts";
 import { access, mkdir, readdir, rm } from "fs/promises";
 import path from "path";
-import prompts from "prompts";
 import { onCancel } from "./getUserInputs.js";
 
 export async function confirmEmptyFolder(projectName) {
@@ -16,25 +16,19 @@ export async function confirmEmptyFolder(projectName) {
 	const files = await readdir(targetPath);
 	if (files.length === 0) return targetPath;
 
-	const { remove } = await prompts(
-		{
-			type: "select",
-			name: "remove",
-			message: `Folder "${
-				projectName || "."
-			}" already exists and is not empty. How do you want to proceed?`,
-			choices: [
-				{ title: "Delete all files and continue", value: true },
-				{ title: "Cancel setup", value: false },
-			],
-			initial: 0,
-		},
-		{ onCancel }
-	);
+	const remove = await select({
+		message: `Folder "${
+			projectName || "."
+		}" already exists and is not empty. How do you want to proceed?`,
+		options: [
+			{ label: "Delete all files and continue", value: true },
+			{ label: "Cancel setup", value: false },
+		],
+		initialValue: true,
+	});
 
-	if (!remove) {
-		console.log("Setup cancelled.");
-		process.exit(1);
+	if (isCancel(remove) || !remove) {
+		onCancel();
 	}
 
 	if (targetPath === cwd) {

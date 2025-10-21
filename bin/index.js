@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
+import { isCancel, spinner, text } from "@clack/prompts";
 import chalk from "chalk";
 import { execa } from "execa";
 import path from "path";
-import prompts from "prompts";
 import { fileURLToPath } from "url";
 
 // Utility functions
@@ -23,84 +23,115 @@ const TEMPLATES_DIR = path.join(__dirname, "../templates");
 
 async function main() {
 	let { useNpm, useYarn } = { useNpm: false, useYarn: false };
-
 	const pkg = getPkgManager();
 
-	if (pkg === "npm") {
-		useNpm = true;
-	}
-	if (pkg === "yarn") {
-		useYarn = true;
-	}
+	if (pkg === "npm") useNpm = true;
+	if (pkg === "yarn") useYarn = true;
 
-	const { projectName } = await prompts(
-		{
-			type: "text",
-			name: "projectName",
-			message: "Enter your project name:",
-			validate: (name) => !!name || "Project name is required!",
+	const projectName = await text({
+		message: "Enter your project name:",
+		placeholder: "my-app",
+		validate(value) {
+			if (!value || !value.trim()) return "Project name is required!";
 		},
-		{ onCancel }
-	);
+	});
+
+	if (isCancel(projectName)) onCancel();
 
 	await confirmEmptyFolder(projectName);
 
 	const responses = await getUserInputs(projectName);
-
 	const projectPath = path.resolve(CURRENT_DIR, projectName);
 	const language = responses.language;
 	const viteTemplate = language === "ts" ? "react-ts" : "react";
 	const ext = language === "ts" ? "tsx" : "jsx";
+	const indexCssPath = path.join(projectPath, "src", "index.css");
 
-	console.log(
-		chalk.cyan(
-			`\nCreating Vite React + ${
-				language === "ts" ? "TypeScript" : "JavaScript"
-			} project...`
-		)
-	);
+	const createSpin = spinner();
+	createSpin.start("Creating your Vite + React project...");
+	try {
+		const createArgs = [
+			"create",
+			useYarn && isYarnV1() ? "vite" : "vite@latest",
+			projectName,
+			useNpm && "--",
+			"--template",
+			viteTemplate,
+		].filter(Boolean);
 
-	const createArgs = [
-		"create",
-		useYarn && isYarnV1() ? "vite" : "vite@latest",
-		projectName,
-		useNpm && "--",
-		"--template",
-		viteTemplate,
-	].filter(Boolean);
-
-	await execa(pkg, createArgs, { stdio: ["pipe"] });
+		await execa(pkg, createArgs, { stdio: ["pipe"] });
+		createSpin.stop(chalk.green("Project created successfully!"));
+	} catch (err) {
+		createSpin.stop(chalk.red("Failed to create project."));
+		throw err;
+	}
 
 	process.chdir(projectPath);
 
-	const indexCssPath = path.join(process.cwd(), "src", "index.css");
-
-	console.log(chalk.cyan(`\nInstalling dependencies using ${pkg}...`));
-
-	await execa(pkg, ["install"], { stdio: "inherit" });
-
-	if (responses.gitInit) {
-		await execa("git", ["init"], { stdio: "inherit" });
-		console.log(chalk.green("✔ Git repository initialized!"));
+	const depSpin = spinner();
+	depSpin.start(`Installing dependencies using ${pkg}...`);
+	try {
+		await execa(pkg, ["install"], { stdio: ["pipe"] });
+		depSpin.stop(chalk.green("Dependencies installed."));
+	} catch (err) {
+		depSpin.stop(chalk.red("Failed to install dependencies."));
+		throw err;
 	}
 
-	await installAdditionalDeps(responses, pkg, useYarn);
+	if (responses.gitInit) {
+		const gitSpin = spinner();
+		gitSpin.start("Initializing git repository...");
+		try {
+			await execa("git", ["init"], { stdio: ["pipe"] });
+			gitSpin.stop(chalk.green("Git repository initialized."));
+		} catch (err) {
+			gitSpin.stop(chalk.red("Git initialization failed."));
+			throw err;
+		}
+	}
 
-	await setupCssFramework({
-		projectPath,
-		TEMPLATES_DIR,
-		language,
-		cssFramework: responses.cssFramework,
-		indexCssPath,
-		ext,
-		pkg,
-	});
+	const extrasSpin = spinner();
+	extrasSpin.start("Installing additional dependencies...");
+	try {
+		await installAdditionalDeps(responses, pkg, useYarn);
+		extrasSpin.stop(chalk.green("Additional dependencies installed."));
+	} catch (err) {
+		extrasSpin.stop(
+			chalk.red("Failed to install additional dependencies.")
+		);
+		throw err;
+	}
+
+	const cssSpin = spinner();
+	if (responses.cssFramework !== "none") {
+		cssSpin.start(`Setting up ${responses.cssFramework}...`);
+	}
+	try {
+		await setupCssFramework({
+			projectPath,
+			TEMPLATES_DIR,
+			language,
+			cssFramework: responses.cssFramework,
+			indexCssPath,
+			ext,
+			pkg,
+		});
+		if (responses.cssFramework !== "none") {
+			cssSpin.stop(
+				chalk.green(`${responses.cssFramework} setup complete.`)
+			);
+		}
+	} catch (err) {
+		cssSpin.stop(chalk.red(`Failed to setup ${responses.cssFramework}.`));
+		throw err;
+	}
 
 	cleanDir(path.join(process.cwd(), "public"));
 	cleanDir(path.join(process.cwd(), "src", "assets"));
 
 	printFinalMessage(responses, projectName);
 
+	console.log(chalk.cyan("\nStarting development server...\n"));
 	await execa(pkg, ["run", "dev"], { stdio: "inherit" });
 }
 

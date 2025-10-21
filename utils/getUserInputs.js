@@ -1,4 +1,12 @@
-import prompts from "prompts";
+import {
+	cancel,
+	confirm,
+	intro,
+	isCancel,
+	note,
+	outro,
+	select,
+} from "@clack/prompts";
 import { configExists, loadConfig, saveConfig } from "./fsHelpers.js";
 
 export function onCancel() {
@@ -7,6 +15,8 @@ export function onCancel() {
 }
 
 export async function getUserInputs(projectName) {
+	intro("⚡ Create VRTW Setup");
+
 	let oldConfig = {};
 	let useOldConfig = false;
 
@@ -14,126 +24,122 @@ export async function getUserInputs(projectName) {
 		oldConfig = await loadConfig();
 		oldConfig.projectName = projectName;
 
-		const { useExisting } = await prompts(
-			{
-				type: "select",
-				name: "useExisting",
-				message:
-					`Previous setup found: ` +
-					`Language: ${oldConfig.language || "N/A"} | ` +
-					`Quick Setup: ${oldConfig.quickSetup ? "Yes" : "No"} | ` +
-					`CSS Framework: ${oldConfig.cssFramework || "N/A"} | ` +
-					`State Mgmt: ${oldConfig.stateManagement || "none"}\n\n` +
-					`How would you like to proceed?`,
-				choices: [
-					{ title: "Continue with previous setup", value: true },
-					{ title: "Start fresh (new setup)", value: false },
-				],
-				initial: 0,
-			},
-			{ onCancel }
-		);
+		const msg = `Previous setup found:
+• Language: ${oldConfig.language || "N/A"}
+• Quick Setup: ${oldConfig.quickSetup ? "Yes" : "No"}
+• CSS Framework: ${oldConfig.cssFramework || "N/A"}
+• State Mgmt: ${oldConfig.stateManagement || "none"}
+
+How would you like to proceed?`;
+
+		const useExisting = await select({
+			message: msg,
+			options: [
+				{ value: true, label: "Continue with previous setup" },
+				{ value: false, label: "Start fresh (new setup)" },
+			],
+			initialValue: true,
+		});
+
+		if (isCancel(useExisting)) {
+			cancel("Operation cancelled.");
+			process.exit(1);
+		}
 
 		useOldConfig = useExisting;
-		if (useOldConfig) return { ...oldConfig, projectName };
+		if (useOldConfig) {
+			outro("Continuing with previous setup...");
+			return { ...oldConfig, projectName };
+		}
 	}
 
 	const defaults = { ...oldConfig, projectName };
 
-	const initialResponses = await prompts(
-		[
-			{
-				type: "select",
-				name: "language",
-				message: "Which language do you want to use?",
-				choices: [
-					{ title: "TypeScript", value: "ts" },
-					{ title: "JavaScript", value: "js" },
-				],
-				initial: defaults.language === "js" ? 1 : 0,
-			},
-			{
-				type: "toggle",
-				name: "quickSetup",
-				message:
-					"Quick Setup? (React + Tailwind CSS + React Icons + React Router + Axios)",
-				initial: defaults.quickSetup ?? true,
-				active: "yes",
-				inactive: "no",
-			},
+	const language = await select({
+		message: "Which language do you want to use?",
+		options: [
+			{ label: "TypeScript", value: "ts" },
+			{ label: "JavaScript", value: "js" },
 		],
-		{ onCancel }
-	);
+		initialValue: defaults.language === "js" ? "js" : "ts",
+	});
+	if (isCancel(language)) onCancel();
 
-	const moreResponses = await prompts(
-		[
-			{
-				type: initialResponses.quickSetup ? null : "select",
-				name: "cssFramework",
-				message: "Which CSS framework do you want to use?",
-				choices: [
-					{ title: "Tailwind CSS", value: "tailwind" },
-					{ title: "Bootstrap", value: "bootstrap" },
-					{ title: "None", value: "none" },
-				],
-				initial: ["tailwind", "bootstrap", "none"].indexOf(
-					defaults.cssFramework || "tailwind"
-				),
-			},
-			{
-				type: initialResponses.quickSetup ? null : "toggle",
-				name: "installReactIcons",
-				message:
-					"Would you like to install react-icons (icon library)?",
-				initial: defaults.installReactIcons ?? true,
-				active: "yes",
-				inactive: "no",
-			},
-			{
-				type: initialResponses.quickSetup ? null : "toggle",
-				name: "installRouter",
-				message: "Would you like to install react-router?",
-				initial: defaults.installRouter ?? true,
-				active: "yes",
-				inactive: "no",
-			},
-			{
-				type: "select",
-				name: "stateManagement",
-				message:
-					"Which state management library do you want to install?",
-				choices: [
-					{ title: "None", value: "none" },
-					{ title: "Redux Toolkit", value: "redux" },
-					{ title: "Zustand", value: "zustand" },
-				],
-				initial: ["none", "redux", "zustand"].indexOf(
-					defaults.stateManagement || "none"
-				),
-			},
-			{
-				type: initialResponses.quickSetup ? null : "toggle",
-				name: "installAxios",
-				message: "Would you like to install axios?",
-				initial: defaults.installAxios ?? true,
-				active: "yes",
-				inactive: "no",
-			},
-			{
-				type: "toggle",
-				name: "gitInit",
-				message: "Would you like to initialize a git repository?",
-				initial: defaults.gitInit ?? false,
-				active: "yes",
-				inactive: "no",
-			},
-		],
-		{ onCancel }
-	);
+	const quickSetup = await confirm({
+		message:
+			"Quick Setup? (React + Tailwind CSS + React Icons + React Router + Axios)",
+		initialValue: defaults.quickSetup ?? true,
+	});
+	if (isCancel(quickSetup)) onCancel();
 
-	const responses = { projectName, ...initialResponses, ...moreResponses };
+	let cssFramework = "tailwind";
+	let installReactIcons = true;
+	let installRouter = true;
+	let installAxios = true;
+	let stateManagement = "none";
+	let gitInit = false;
 
-	if (responses.quickSetup) {
+	if (!quickSetup) {
+		cssFramework = await select({
+			message: "Which CSS framework do you want to use?",
+			options: [
+				{ label: "Tailwind CSS", value: "tailwind" },
+				{ label: "Bootstrap", value: "bootstrap" },
+				{ label: "None", value: "none" },
+			],
+			initialValue: defaults.cssFramework || "tailwind",
+		});
+		if (isCancel(cssFramework)) onCancel();
+
+		installReactIcons = await confirm({
+			message: "Would you like to install react-icons?",
+			initialValue: defaults.installReactIcons ?? true,
+		});
+		if (isCancel(installReactIcons)) onCancel();
+
+		installRouter = await confirm({
+			message: "Would you like to install react-router?",
+			initialValue: defaults.installRouter ?? true,
+		});
+		if (isCancel(installRouter)) onCancel();
+
+		stateManagement = await select({
+			message: "Which state management library do you want to use?",
+			options: [
+				{ label: "None", value: "none" },
+				{ label: "Redux Toolkit", value: "redux" },
+				{ label: "Zustand", value: "zustand" },
+			],
+			initialValue: defaults.stateManagement || "none",
+		});
+		if (isCancel(stateManagement)) onCancel();
+
+		installAxios = await confirm({
+			message: "Would you like to install axios?",
+			initialValue: defaults.installAxios ?? true,
+		});
+		if (isCancel(installAxios)) onCancel();
+
+		gitInit = await confirm({
+			message: "Would you like to initialize a git repository?",
+			initialValue: defaults.gitInit ?? false,
+		});
+		if (isCancel(gitInit)) onCancel();
+	}
+
+	const responses = {
+		projectName,
+		language,
+		quickSetup,
+		cssFramework,
+		installReactIcons,
+		installRouter,
+		installAxios,
+		stateManagement,
+		gitInit,
+	};
+
+	if (quickSetup) {
 		Object.assign(responses, {
 			cssFramework: "tailwind",
 			installReactIcons: true,
@@ -143,5 +149,7 @@ export async function getUserInputs(projectName) {
 	}
 
 	await saveConfig(responses);
+
+	note("Configuration saved for next time.", "Saved");
 	return responses;
 }

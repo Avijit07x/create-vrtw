@@ -21,5 +21,5 @@ export async function installDeps(pkgManager, dev, ...packages) {
 				? ["install", "-D", ...packages]
 				: ["install", ...packages];
 	}
-	await execa(cmd, args, { stdio: "inherit" });
+	await execa(cmd, args, { stdio: "pipe" });
 }

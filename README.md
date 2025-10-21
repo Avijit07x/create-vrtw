@@ -2,7 +2,7 @@
 
 <div align="center">
   <p align="center" dir="auto">
-  <img width="180"  src="./assets/logo.png" alt="vrtw logo" style="max-width: 100%;">
+  <img width="180"  src="https://res.cloudinary.com/dltj8bim0/image/upload/v1761060580/logo_kukwt0.png" alt="vrtw logo" style="max-width: 100%;">
   </p>
   <img  />
   <img src="https://img.shields.io/npm/v/create-vrtw" alt="npm version" />

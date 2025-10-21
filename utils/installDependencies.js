@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import { installDeps } from "./installDeps.js";
 import { isYarnV1 } from "./isYarnV1.js";
 
@@ -20,7 +19,6 @@ export async function installAdditionalDeps(responses, pkg, useYarn) {
 	}
 
 	if (additionalDeps.length) {
-		console.log(chalk.cyan(`\nInstalling: ${additionalDeps.join(", ")}`));
 		await installDeps(pkg, false, ...additionalDeps);
 	}
 }

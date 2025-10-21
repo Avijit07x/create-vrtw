@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import fs, { promises as fsp } from "fs";
 import path from "path";
 import { deleteIfExists } from "./fsHelpers.js";
@@ -16,12 +15,6 @@ export async function setupCssFramework({
 	process.chdir(projectPath);
 
 	if (cssFramework === "tailwind") {
-		console.log(
-			chalk.cyan(
-				"\nInstalling Tailwind CSS and @tailwindcss/vite plugin..."
-			)
-		);
-
 		await installDeps(pkg, true, "tailwindcss", "@tailwindcss/vite");
 
 		const viteConfigFile = `vite.config.${language === "ts" ? "ts" : "js"}`;
@@ -38,8 +31,6 @@ export async function setupCssFramework({
 		);
 		await fsp.writeFile(indexCssPath, indexCssContent, "utf-8");
 	} else if (cssFramework === "bootstrap") {
-		console.log(chalk.cyan("\nInstalling Bootstrap..."));
-
 		await installDeps("pnpm", true, "bootstrap");
 
 		const mainFileExt = language === "ts" ? "tsx" : "jsx";
@@ -61,7 +52,6 @@ export async function setupCssFramework({
 			await fsp.writeFile(indexCssPath, "", "utf8");
 		}
 	} else if (cssFramework === "none") {
-		console.log(chalk.yellow("No CSS framework will be installed."));
 		if (fs.existsSync(indexCssPath)) {
 			const indexCssContent = await fsp.readFile(
 				path.join(TEMPLATES_DIR, "index.template"),
