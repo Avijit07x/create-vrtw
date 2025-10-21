@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { installDeps } from "./installDeps.js";
 import { isYarnV1 } from "./isYarnV1.js";
 
-export async function installAdditionalDeps(responses, pkg) {
+export async function installAdditionalDeps(responses, pkg, useYarn) {
 	const additionalDeps = [];
 
 	if (responses.installReactIcons) additionalDeps.push("react-icons");
@@ -13,7 +13,11 @@ export async function installAdditionalDeps(responses, pkg) {
 		additionalDeps.push("zustand");
 	}
 	if (responses.installAxios) additionalDeps.push("axios");
-	additionalDeps.push(useYarn && isYarnV1() ? "vite" : "vite@latest");
+	if (useYarn && isYarnV1()) {
+		additionalDeps.push("vite");
+	} else {
+		additionalDeps.push("vite@latest");
+	}
 
 	if (additionalDeps.length) {
 		console.log(chalk.cyan(`\nInstalling: ${additionalDeps.join(", ")}`));

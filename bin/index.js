@@ -29,6 +29,9 @@ async function main() {
 	if (pkg === "npm") {
 		useNpm = true;
 	}
+	if (pkg === "yarn") {
+		useYarn = true;
+	}
 
 	const { projectName } = await prompts(
 		{
@@ -64,7 +67,7 @@ async function main() {
 		useNpm && "--",
 		"--template",
 		viteTemplate,
-	];
+	].filter(Boolean);
 
 	await execa(pkg, createArgs, { stdio: ["pipe"] });
 
@@ -81,7 +84,7 @@ async function main() {
 		console.log(chalk.green("✔ Git repository initialized!"));
 	}
 
-	await installAdditionalDeps(responses, pkg);
+	await installAdditionalDeps(responses, pkg, useYarn);
 
 	await setupCssFramework({
 		projectPath,
