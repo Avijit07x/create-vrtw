@@ -1,21 +1,13 @@
 <br>
 
 <div align="center">
-   <a href="https://www.npmjs.com/package/create-vrtw" target="_blank">
-    <img src="https://img.shields.io/npm/v/create-vrtw" alt="npm version" />
-  </a>
-    <a href="https://www.npmjs.com/package/create-vrtw" target="_blank">
-    <img src="https://img.shields.io/npm/dm/create-vrtw" alt="npm downloads" />
-  </a>
-   <a href="https://github.com/avijit07x/create-vrtw/actions">
-    <img src="https://github.com/avijit07x/create-vrtw/actions/workflows/publish.yml/badge.svg" alt="CI status" />
-  </a>
+  <img src="https://img.shields.io/npm/v/create-vrtw" alt="npm version" />
+  <img src="https://img.shields.io/npm/dm/create-vrtw" alt="npm downloads" />
+  <img src="https://github.com/avijit07x/create-vrtw/actions/workflows/publish.yml/badge.svg" alt="CI status" />
   <img src="https://img.shields.io/npm/l/create-vrtw" alt="license" />
-  <a href="https://github.com/avijit07x/create-vrtw">
-    <img src="https://img.shields.io/github/stars/avijit07x/create-vrtw?style=social" alt="GitHub stars" />
-  </a>
+  <img src="https://img.shields.io/github/stars/avijit07x/create-vrtw?style=social" alt="GitHub stars" />
 </div>
-<br><br>
+<br>
 
 # create-vrtw
 
