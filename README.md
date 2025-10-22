@@ -86,32 +86,6 @@ create-vrtw
     - Deletes: `src/App.css`, all of `public/`
     - Cleans/minimizes: `src/App.jsx` / `src/App.tsx` and `src/index.css`
 8. Your starting `App` component matches your CSS framework
-9. Shows next steps — just `cd` and `npm run dev`!
-
-## Example File Structure
-
-```
-my-app/
-├── public/
-├── src/
-│   ├── App.jsx / App.tsx      # Cleaned minimal
-│   ├── index.css              # Present if Tailwind; empty if Bootstrap/None
-│   ├── main.jsx / main.tsx    # Imports Bootstrap CSS if chosen
-│   └── ...
-├── vite.config.js / vite.config.ts   # Tailwind Plugin integrated if using Tailwind
-├── tsconfig.json    # Only for TypeScript projects
-└── ...
-```
-
-## Example App Component (After Setup)
-
-```jsx
-function App() {
-	return <div>Hello Vite + React + TailwindCSS!</div>;
-}
-
-export default App;
-```
 
 ## Optional Extras
 
