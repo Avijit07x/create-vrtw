@@ -45,7 +45,5 @@ export async function confirmEmptyFolder(projectName) {
 		await rm(targetPath, { recursive: true, force: true });
 		await mkdir(targetPath);
 	}
-
-	console.log(`Cleared existing folder: ${projectName || "."}`);
 	return targetPath;
 }

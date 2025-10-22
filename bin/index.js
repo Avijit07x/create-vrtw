@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { isCancel, spinner, text } from "@clack/prompts";
+import { isCancel, log, spinner, text } from "@clack/prompts";
 import chalk from "chalk";
 import { execa } from "execa";
 import path from "path";
@@ -13,7 +13,6 @@ import { getPkgManager } from "../utils/getPkgManager.js";
 import { getUserInputs, onCancel } from "../utils/getUserInputs.js";
 import { installAdditionalDeps } from "../utils/installDependencies.js";
 import { isYarnV1 } from "../utils/isYarnV1.js";
-import { printFinalMessage } from "../utils/printFinalMessage.js";
 import { setupCssFramework } from "../utils/setupCssFramework.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -103,8 +102,15 @@ async function main() {
 	}
 
 	const cssSpin = spinner();
+	const cssFramework =
+		responses.cssFramework === "none"
+			? "No CSS Framework"
+			: responses.cssFramework
+			? responses.cssFramework.charAt(0).toUpperCase() +
+			  responses.cssFramework.slice(1)
+			: "N/A";
 	if (responses.cssFramework !== "none") {
-		cssSpin.start(`Setting up ${responses.cssFramework}...`);
+		cssSpin.start(`Setting up ${cssFramework}...`);
 	}
 	try {
 		await setupCssFramework({
@@ -117,21 +123,18 @@ async function main() {
 			pkg,
 		});
 		if (responses.cssFramework !== "none") {
-			cssSpin.stop(
-				chalk.green(`${responses.cssFramework} setup complete.`)
-			);
+			cssSpin.stop(chalk.green(`${cssFramework} setup complete.`));
 		}
 	} catch (err) {
-		cssSpin.stop(chalk.red(`Failed to setup ${responses.cssFramework}.`));
+		cssSpin.stop(chalk.red(`Failed to setup ${cssFramework}.`));
 		throw err;
 	}
 
 	cleanDir(path.join(process.cwd(), "public"));
 	cleanDir(path.join(process.cwd(), "src", "assets"));
 
-	printFinalMessage(responses, projectName);
-
-	console.log(chalk.cyan("\nStarting development server...\n"));
+	log.step(chalk.green("Project setup complete!"));
+	log.step(chalk.green("Dev server started."));
 	await execa(pkg, ["run", "dev"], { stdio: "inherit" });
 }
 

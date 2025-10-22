@@ -1,12 +1,12 @@
 import {
 	cancel,
 	confirm,
-	intro,
 	isCancel,
 	note,
-	outro,
 	select,
+	spinner,
 } from "@clack/prompts";
+import chalk from "chalk";
 import { configExists, loadConfig, saveConfig } from "./fsHelpers.js";
 
 export function onCancel() {
@@ -15,8 +15,6 @@ export function onCancel() {
 }
 
 export async function getUserInputs(projectName) {
-	intro("⚡ Create VRTW Setup");
-
 	let oldConfig = {};
 	let useOldConfig = false;
 
@@ -24,16 +22,39 @@ export async function getUserInputs(projectName) {
 		oldConfig = await loadConfig();
 		oldConfig.projectName = projectName;
 
-		const msg = `Previous setup found:
-• Language: ${oldConfig.language || "N/A"}
-• Quick Setup: ${oldConfig.quickSetup ? "Yes" : "No"}
-• CSS Framework: ${oldConfig.cssFramework || "N/A"}
-• State Mgmt: ${oldConfig.stateManagement || "none"}
+		const lang = oldConfig.language === "ts" ? "TypeScript" : "JavaScript";
+		const quickSetup =
+			"React + Tailwind CSS + React Icons + React Router + Axios";
 
-How would you like to proceed?`;
+		const cssFramework =
+			oldConfig.cssFramework === "none"
+				? "No CSS Framework"
+				: oldConfig.cssFramework
+				? oldConfig.cssFramework.charAt(0).toUpperCase() +
+				  oldConfig.cssFramework.slice(1)
+				: "N/A";
+		const stateManagement =
+			oldConfig.stateManagement === "redux"
+				? "Redux Toolkit"
+				: oldConfig.stateManagement === "zustand"
+				? "Zustand"
+				: "None";
+
+		note(
+			`Previous setup found with the following configuration:
+
+• ${chalk.bold("Language:")} ${chalk.green(lang || "N/A")}
+• ${chalk.bold("Quick Setup:")} ${
+				oldConfig.quickSetup ? chalk.green(quickSetup) : chalk.red("No")
+			}
+• ${chalk.bold("CSS Framework:")} ${chalk.yellow(cssFramework || "N/A")}
+• ${chalk.bold("State Management:")} ${chalk.magenta(stateManagement || "None")}
+`,
+			"Previous Configuration"
+		);
 
 		const useExisting = await select({
-			message: msg,
+			message: "How would you like to proceed?",
 			options: [
 				{ value: true, label: "Continue with previous setup" },
 				{ value: false, label: "Start fresh (new setup)" },
@@ -47,8 +68,10 @@ How would you like to proceed?`;
 		}
 
 		useOldConfig = useExisting;
+		const previousSpin = spinner();
 		if (useOldConfig) {
-			outro("Continuing with previous setup...");
+			previousSpin.start("Loading previous setup...");
+			previousSpin.stop(chalk.green("Previous setup loaded."));
 			return { ...oldConfig, projectName };
 		}
 	}

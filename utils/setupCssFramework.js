@@ -31,7 +31,7 @@ export async function setupCssFramework({
 		);
 		await fsp.writeFile(indexCssPath, indexCssContent, "utf-8");
 	} else if (cssFramework === "bootstrap") {
-		await installDeps("pnpm", true, "bootstrap");
+		await installDeps(pkg, false, "bootstrap");
 
 		const mainFileExt = language === "ts" ? "tsx" : "jsx";
 		const mainFile = path.join(process.cwd(), "src", `main.${mainFileExt}`);
