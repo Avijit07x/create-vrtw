@@ -12,6 +12,7 @@ export async function installAdditionalDeps(responses, pkg, useYarn) {
 		additionalDeps.push("zustand");
 	}
 	if (responses.installAxios) additionalDeps.push("axios");
+	additionalDeps.push("react", "react-dom");
 	if (useYarn && isYarnV1()) {
 		additionalDeps.push("vite");
 	} else {
