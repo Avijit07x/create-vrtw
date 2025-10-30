@@ -37,7 +37,7 @@ Unnecessary files and assets are auto-cleaned, so you get a fresh, production-re
 _using npm:_
 
 ```sh
-npm create vrtw
+npm create vrtw@latest
 ```
 
 _using bun:_
