@@ -4,7 +4,6 @@
   <p align="center" dir="auto">
   <img width="180"  src="https://res.cloudinary.com/dltj8bim0/image/upload/v1761060580/logo_kukwt0.png" alt="vrtw logo" style="max-width: 100%;">
   </p>
-  <img  />
   <img src="https://img.shields.io/npm/v/create-vrtw" alt="npm version" />
   <img src="https://img.shields.io/npm/dm/create-vrtw" alt="npm downloads" />
   <img src="https://github.com/avijit07x/create-vrtw/actions/workflows/publish.yml/badge.svg" alt="CI status" />
@@ -15,22 +14,22 @@
 
 <h1 align="center">create-vrtw</h1>
 
-> Scaffold a modern Vite + React + Tailwind/Bootstrap app in seconds — zero config, one prompt.
+> Scaffold a modern Vite + React + Tailwind/Bootstrap app in seconds — zero config, interactive setup
 
 A zero-config CLI to instantly scaffold a modern front-end project with **[Vite](https://vitejs.dev/)**, **[React](https://react.dev/learn)** (JavaScript or TypeScript), and your choice of **[Tailwind CSS v4](https://tailwindcss.com/)** (with the new **[@tailwindcss/vite](https://tailwindcss.com/docs/installation#vite-plugin)** plugin) **or [Bootstrap v5](https://getbootstrap.com/)** — or no CSS framework at all.  
-Optional extras (with one prompt!): **react-icons, React Router, Redux Toolkit**.  
+Optional extras: **Lucide or Huge Icons, React Router, Redux Toolkit or Zustand, and Axios.**  
 Unnecessary files and assets are auto-cleaned, so you get a fresh, production-ready workspace in seconds.
 
 ## Features
 
--   **Vite + React + JavaScript/TypeScript**: Fast, modern development stack
--   **CSS Framework Choice**:  
-    Choose between **Tailwind CSS v4**, **Bootstrap v5**, or _no CSS framework_
--   **Tailwind v4 with official Vite plugin** or **Bootstrap 5** ready to use instantly
--   **Extra Libraries (optional)**: Add react-icons, React Router, Redux Toolkit, Zustand, and Axios in one step
--   **Automatic Cleanup**: Removes default assets, public files, boilerplate noise
--   **Ready-to-Code**: Minimal `App.jsx` / `App.tsx`, clean folder, and CSS framework imported for you
--   **One Command, Super Fast!**
+- **Vite + React + JavaScript/TypeScript**: Fast, modern development stack
+- **CSS Framework Choice**:  
+  Choose between **Tailwind CSS v4**, **Bootstrap v5**, or _no CSS framework_
+- **Tailwind v4 with official Vite plugin** or **Bootstrap 5** ready to use instantly
+- **Extra Libraries (optional)**: Add Lucide or Huge Icons, React Router, Redux Toolkit, Zustand, and Axios in one step
+- **Automatic Cleanup**: Removes default assets, public files, boilerplate noise
+- **Ready-to-Code**: Minimal `App.jsx` / `App.tsx`, clean folder, and CSS framework imported for you
+- **One Command, Super Fast!**
 
 ## Quick Start
 
@@ -73,11 +72,12 @@ create-vrtw
     - [Bootstrap v5](https://getbootstrap.com/docs/)
     - None
 4. Optionally: Install
-    - [React-Icons](https://react-icons.github.io/react-icons/) (icon library)
+    - [Lucide Icons](https://lucide.dev/icons/) or [Huge Icons](https://hugeicons.com/) (icon library)
     - [React Router](https://reactrouter.com/)
     - [Redux Toolkit](https://redux-toolkit.js.org/) (+ React Redux)
     - [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) (lightweight state manager)
     - [Axios](https://axios-http.com/)
+
 5. Creates a Vite + React app (chosen language)
 6. Installs your chosen CSS framework, and configures everything for it:
     - **Tailwind**: Adds plugin, config, template CSS file
@@ -91,25 +91,26 @@ create-vrtw
 
 > If you choose at the prompt, the following will also be installed:
 
--   **[react-icons](https://react-icons.github.io/react-icons/)** (icon components)
--   **[react-router](https://reactrouter.com/)**
--   **[@reduxjs/toolkit](https://redux-toolkit.js.org/) + [react-redux](https://react-redux.js.org/)**
--   **[zustand](https://github.com/pmndrs/zustand)** (lightweight state manager)
--   **[axios](https://axios-http.com/)** (for API requests)
+- **[Lucide Icons](https://lucide.dev/icons/) or [Huge Icons](https://hugeicons.com/) (icon library)**
+- **[react-router](https://reactrouter.com/)**
+- **[@reduxjs/toolkit](https://redux-toolkit.js.org/) + [react-redux](https://react-redux.js.org/)**
+- **[zustand](https://github.com/pmndrs/zustand)** (lightweight state manager)
+- **[axios](https://axios-http.com/)** (for API requests)
 
 These are **optional** – just answer “yes” at the prompt!
 
 ## Documentation
 
--   [Vite Guide](https://vitejs.dev/guide/)
--   [React Quick Start](https://react.dev/learn)
--   [Tailwind CSS v4](https://tailwindcss.com/docs/installation)
--   [Bootstrap Docs](https://getbootstrap.com/docs/)
--   [React Icons](https://react-icons.github.io/react-icons/)
--   [React Router](https://reactrouter.com/en/main/start/tutorial)
--   [Redux Toolkit](https://redux-toolkit.js.org/)
--   [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
--   [Axios](https://axios-http.com/)
+- [Vite Guide](https://vitejs.dev/guide/)
+- [React Quick Start](https://react.dev/learn)
+- [Tailwind CSS v4](https://tailwindcss.com/docs/installation)
+- [Bootstrap Docs](https://getbootstrap.com/docs/)
+- [Lucide](https://lucide.dev/icons/)
+- [Huge Icons](https://hugeicons.com/)
+- [React Router](https://reactrouter.com/en/main/start/tutorial)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
+- [Axios](https://axios-http.com/)
 
 ## Contribute
 

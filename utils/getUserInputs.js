@@ -30,15 +30,22 @@ export async function getUserInputs(projectName) {
 			oldConfig.cssFramework === "none"
 				? "No CSS Framework"
 				: oldConfig.cssFramework
-				? oldConfig.cssFramework.charAt(0).toUpperCase() +
-				  oldConfig.cssFramework.slice(1)
-				: "N/A";
+					? oldConfig.cssFramework.charAt(0).toUpperCase() +
+						oldConfig.cssFramework.slice(1)
+					: "N/A";
+		const iconLibrary =
+			oldConfig.iconLibrary === "lucide"
+				? "Lucide Icons"
+				: oldConfig.iconLibrary === "huge"
+					? "Huge Icons"
+					: "None";
+
 		const stateManagement =
 			oldConfig.stateManagement === "redux"
 				? "Redux Toolkit"
 				: oldConfig.stateManagement === "zustand"
-				? "Zustand"
-				: "None";
+					? "Zustand"
+					: "None";
 
 		note(
 			`Previous setup found with the following configuration:
@@ -48,9 +55,10 @@ export async function getUserInputs(projectName) {
 				oldConfig.quickSetup ? chalk.green(quickSetup) : chalk.red("No")
 			}
 • ${chalk.bold("CSS Framework:")} ${chalk.yellow(cssFramework || "N/A")}
+• ${chalk.bold("Icons:")} ${chalk.blue(iconLibrary)}
 • ${chalk.bold("State Management:")} ${chalk.magenta(stateManagement || "None")}
 `,
-			"Previous Configuration"
+			"Previous Configuration",
 		);
 
 		const useExisting = await select({
@@ -64,7 +72,7 @@ export async function getUserInputs(projectName) {
 
 		if (isCancel(useExisting)) {
 			cancel("Operation cancelled.");
-			process.exit(1);
+			onCancel();
 		}
 
 		useOldConfig = useExisting;
@@ -90,13 +98,13 @@ export async function getUserInputs(projectName) {
 
 	const quickSetup = await confirm({
 		message:
-			"Quick Setup? (React + Tailwind CSS + React Icons + React Router + Axios)",
+			"Quick Setup? (React + Tailwind CSS + Lucide Icons + React Router + Axios)",
 		initialValue: defaults.quickSetup ?? true,
 	});
 	if (isCancel(quickSetup)) onCancel();
 
 	let cssFramework = "tailwind";
-	let installReactIcons = true;
+	let iconLibrary = "none";
 	let installRouter = true;
 	let installAxios = true;
 	let stateManagement = "none";
@@ -114,11 +122,17 @@ export async function getUserInputs(projectName) {
 		});
 		if (isCancel(cssFramework)) onCancel();
 
-		installReactIcons = await confirm({
-			message: "Would you like to install react-icons?",
-			initialValue: defaults.installReactIcons ?? true,
+		iconLibrary = await select({
+			message: "Which icon library would you like to use?",
+			options: [
+				{ label: "Lucide Icons", value: "lucide" },
+				{ label: "Huge Icons", value: "huge" },
+				{ label: "None", value: "none" },
+			],
+			initialValue: defaults.iconLibrary ?? "none",
 		});
-		if (isCancel(installReactIcons)) onCancel();
+
+		if (isCancel(iconLibrary)) onCancel();
 
 		installRouter = await confirm({
 			message: "Would you like to install react-router?",
@@ -155,7 +169,7 @@ export async function getUserInputs(projectName) {
 		language,
 		quickSetup,
 		cssFramework,
-		installReactIcons,
+		iconLibrary,
 		installRouter,
 		installAxios,
 		stateManagement,
@@ -165,7 +179,7 @@ export async function getUserInputs(projectName) {
 	if (quickSetup) {
 		Object.assign(responses, {
 			cssFramework: "tailwind",
-			installReactIcons: true,
+			iconLibrary: "lucide",
 			installRouter: true,
 			installAxios: true,
 		});

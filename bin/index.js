@@ -11,6 +11,7 @@ import { confirmEmptyFolder } from "../utils/confirmEmptyFolder.js";
 import { cleanDir } from "../utils/fsHelpers.js";
 import { getPkgManager } from "../utils/getPkgManager.js";
 import { getUserInputs, onCancel } from "../utils/getUserInputs.js";
+import { handleDevServer } from "../utils/handleDevServer.js";
 import { installAdditionalDeps } from "../utils/installDependencies.js";
 import { isYarnV1 } from "../utils/isYarnV1.js";
 import { setupCssFramework } from "../utils/setupCssFramework.js";
@@ -96,7 +97,7 @@ async function main() {
 		extrasSpin.stop(chalk.green("Additional dependencies installed."));
 	} catch (err) {
 		extrasSpin.stop(
-			chalk.red("Failed to install additional dependencies.")
+			chalk.red("Failed to install additional dependencies."),
 		);
 		throw err;
 	}
@@ -106,9 +107,9 @@ async function main() {
 		responses.cssFramework === "none"
 			? "No CSS Framework"
 			: responses.cssFramework
-			? responses.cssFramework.charAt(0).toUpperCase() +
-			  responses.cssFramework.slice(1)
-			: "N/A";
+				? responses.cssFramework.charAt(0).toUpperCase() +
+					responses.cssFramework.slice(1)
+				: "N/A";
 	if (responses.cssFramework !== "none") {
 		cssSpin.start(`Setting up ${cssFramework}...`);
 	}
@@ -134,11 +135,10 @@ async function main() {
 	cleanDir(path.join(process.cwd(), "src", "assets"));
 
 	log.step(chalk.green("Project setup complete!"));
-	log.step(chalk.green("Dev server started."));
-	await execa(pkg, ["run", "dev"], { stdio: "inherit" });
+	await handleDevServer(pkg, projectName, log);
 }
 
 main().catch((e) => {
 	console.error(chalk.red("Error:"), e.message || e);
-	process.exit(1);
+	onCancel();
 });
